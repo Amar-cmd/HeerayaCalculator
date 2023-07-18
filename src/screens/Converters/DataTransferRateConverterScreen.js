@@ -3,44 +3,54 @@ import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {useTheme} from '@react-navigation/native';
 
-const FrequencyConverterScreen = () => {
+const DataTransferRateConverterScreen = () => {
   const [display, setDisplay] = useState('0');
-  const [fromUnit, setFromUnit] = useState('Hertz');
-  const [toUnit, setToUnit] = useState('Kilohertz');
-  const [convertedFrequency, setConvertedFrequency] = useState('0');
+  const [fromUnit, setFromUnit] = useState('Bit per second');
+  const [toUnit, setToUnit] = useState('Kilobit per second');
+  const [convertedDataTransferRate, setConvertedDataTransferRate] =
+    useState('0');
 
-  const frequencyUnits = {
-    Hertz: {value: 1, symbol: 'Hz'},
-    Kilohertz: {value: 1e-3, symbol: 'kHz'},
-    Megahertz: {value: 1e-6, symbol: 'MHz'},
-    Gigahertz: {value: 1e-9, symbol: 'GHz'},
+  const dataTransferRateUnits = {
+    'Bit per second': {value: 1, symbol: 'bps'},
+    'Kilobit per second': {value: 1e3, symbol: 'Kbps'},
+    'Kilobyte per second': {value: 8e3, symbol: 'KBps'},
+    'Kibibit per second': {value: 1024, symbol: 'Kibps'},
+    'Megabit per second': {value: 1e6, symbol: 'Mbps'},
+    'Megabyte per second': {value: 8e6, symbol: 'MBps'},
+    'Mebibit per second': {value: 1.048576e6, symbol: 'Mibps'},
+    'Gigabit per second': {value: 1e9, symbol: 'Gbps'},
+    'Gigabyte per second': {value: 8e9, symbol: 'GBps'},
+    'Gibibit per second': {value: 1.073741824e9, symbol: 'Gibps'},
+    'Terabit per second': {value: 1e12, symbol: 'Tbps'},
+    'Terabyte per second': {value: 8e12, symbol: 'TBps'},
+    'Tebibit per second': {value: 1.099511627776e12, symbol: 'Tibps'},
   };
 
-  const theme = useTheme();
+     const theme = useTheme();
 
-  // Use colors based on the current theme
-  const displayTextStyle = {
-    ...styles.displayText,
-    color: theme.colors.text,
-  };
+     // Use colors based on the current theme
+     const displayTextStyle = {
+       ...styles.displayText,
+       color: theme.colors.text,
+     };
 
-  const buttonsContainerStyle = {
-    ...styles.buttonsContainer,
-    backgroundColor: theme.colors.background,
-  };
+     const buttonsContainerStyle = {
+       ...styles.buttonsContainer,
+       backgroundColor: theme.colors.background,
+     };
 
-  const buttonStyle = color => ({
-    ...styles.button,
-    backgroundColor: color || theme.colors.buttonBackground,
-    borderColor: color || theme.colors.border,
-  });
+     const buttonStyle = color => ({
+       ...styles.button,
+       backgroundColor: color || theme.colors.buttonBackground,
+       borderColor: color || theme.colors.border,
+     });
 
-  const buttonTextStyle = color => ({
-    ...styles.buttonText,
-    color: color || theme.colors.buttonText,
-  });
+     const buttonTextStyle = color => ({
+       ...styles.buttonText,
+       color: color || theme.colors.buttonText,
+     });
     
-
+    
   const onButtonPress = buttonValue => {
     if (buttonValue === 'AC') {
       setDisplay('0');
@@ -56,22 +66,23 @@ const FrequencyConverterScreen = () => {
     }
   };
 
-  const convertFrequency = () => {
-    let frequency = parseFloat(display);
-    if (isNaN(frequency) || frequency < 0) {
-      setConvertedFrequency('');
-      return;
-    }
+ const convertDataTransferRate = () => {
+   let dataTransferRate = parseFloat(display);
+   if (isNaN(dataTransferRate) || dataTransferRate < 0) {
+     setConvertedDataTransferRate('');
+     return;
+   }
 
-    frequency =
-      (frequency / frequencyUnits[fromUnit].value) *
-      frequencyUnits[toUnit].value;
+   dataTransferRate =
+     (dataTransferRate * dataTransferRateUnits[fromUnit].value) /
+     dataTransferRateUnits[toUnit].value;
 
-    setConvertedFrequency(frequency.toFixed(7));
-  };
+   setConvertedDataTransferRate(dataTransferRate.toFixed(7));
+ };
+
 
   useEffect(() => {
-    convertFrequency();
+    convertDataTransferRate();
   }, [display, fromUnit, toUnit]);
 
   return (
@@ -81,7 +92,7 @@ const FrequencyConverterScreen = () => {
           selectedValue={fromUnit}
           style={{...styles.picker, color: theme.colors.text}}
           onValueChange={itemValue => setFromUnit(itemValue)}>
-          {Object.entries(frequencyUnits).map(([unit, {symbol}]) => (
+          {Object.entries(dataTransferRateUnits).map(([unit, {symbol}]) => (
             <Picker.Item
               key={unit}
               label={`${unit} (${symbol})`}
@@ -97,7 +108,7 @@ const FrequencyConverterScreen = () => {
           selectedValue={toUnit}
           style={{...styles.picker, color: theme.colors.text}}
           onValueChange={itemValue => setToUnit(itemValue)}>
-          {Object.entries(frequencyUnits).map(([unit, {symbol}]) => (
+          {Object.entries(dataTransferRateUnits).map(([unit, {symbol}]) => (
             <Picker.Item
               key={unit}
               label={`${unit} (${symbol})`}
@@ -105,7 +116,7 @@ const FrequencyConverterScreen = () => {
             />
           ))}
         </Picker>
-        <Text style={displayTextStyle}>{convertedFrequency || '0'}</Text>
+        <Text style={displayTextStyle}>{convertedDataTransferRate || '0'}</Text>
       </View>
 
       <View style={buttonsContainerStyle}>
@@ -170,4 +181,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FrequencyConverterScreen;
+export default DataTransferRateConverterScreen;
