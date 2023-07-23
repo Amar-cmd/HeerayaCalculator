@@ -9,46 +9,63 @@ import {
   Alert,
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
-import DarkMode from '../styles/DarkMode';
+import DarkMode from '../../styles/DarkMode';
 
 const CalculatorScreen = () => {
   const [display, setDisplay] = useState('');
   const [parenthesesCount, setParenthesesCount] = useState(0);
   const [lastButton, setLastButton] = useState(null);
   const [result, setResult] = useState('');
-  // in CalculatorScreen.js
+  
   const theme = useTheme();
+  console.log(theme);
   // Use colors based on the current theme
-   const displayContainerStyle = {
-     ...styles.displayContainer,
-     backgroundColor: theme.colors.background,
-   };
+  const displayContainerStyle = {
+    ...styles.displayContainer,
+    backgroundColor: theme.dark ? theme.colors.buttonBackground : '#fff',
+  };
 
-   const displayTextStyle = {
-     ...styles.displayText,
-     color: theme.colors.text,
-   };
+  const displayTextStyle = {
+    ...styles.displayText,
+    color: theme.colors.text,
+  };
 
-   const resultTextStyle = {
-     ...styles.resultText,
-     color: theme.colors.text,
-   };
+  const resultTextStyle = {
+    ...styles.resultText,
+    color: theme.colors.text,
+  };
 
-   const buttonsContainerStyle = {
-     ...styles.buttonsContainer,
-     backgroundColor: theme.colors.background,
-   };
+  const buttonsContainerStyle = {
+    ...styles.buttonsContainer,
+    backgroundColor: theme.dark ? theme.colors.buttonBackground : '#fff',
+  };
 
-   const buttonStyle = color => ({
-     ...styles.button,
-       backgroundColor: color || theme.colors.buttonBackground,
-     borderColor:color || theme.colors.border
-   });
+  // const buttonStyle = color => ({
+  //   ...styles.button,
+  //   backgroundColor: theme.dark ? theme.colors.buttonBackground : color,
+  //   borderColor: theme.dark ? theme.colors.border : color,
+  // });
 
-   const buttonTextStyle = color => ({
-     ...styles.buttonText,
-     color: color || theme.colors.buttonText,
-   });
+  // const buttonTextStyle = color => ({
+  //   ...styles.buttonText,
+  //   color: color || theme.colors.buttonText,
+  // });
+
+  const buttonStyle = color => ({
+    ...styles.button,
+    backgroundColor: theme.dark
+      ? color === '#2b840c'
+        ? color
+        : theme.colors.buttonBackground
+      : color || '#fff',
+    borderColor: theme.dark ? theme.colors.border : color || '#fff',
+  });
+
+  const buttonTextStyle = color => ({
+    ...styles.buttonText,
+    color: color === '#2b840c' ? '#fff' : color || theme.colors.buttonText,
+  });
+
 
   const onButtonPress = buttonValue => {
     if (buttonValue === 'AC') {
@@ -58,11 +75,39 @@ const CalculatorScreen = () => {
       setResult('');
     } else if (buttonValue === 'Del') {
       setDisplay(display.slice(0, -1));
-    } else if (buttonValue === '.') {
+    }
+    // else if (buttonValue === '.') {
+    //   // Check if current number already contains a dot
+    //   const currentNumber = display.split(/[\+\-\*\/]/).slice(-1)[0];
+    //   if (!/\./.test(currentNumber)) {
+    //     setDisplay(display + buttonValue);
+    //   }
+    // }
+    else if (buttonValue === '.') {
       // Check if current number already contains a dot
       const currentNumber = display.split(/[\+\-\*\/]/).slice(-1)[0];
       if (!/\./.test(currentNumber)) {
-        setDisplay(display + buttonValue);
+        // Check if display is empty or ends with an operator, if so prepend '0.'
+        if (display === '' || /[\+\-\*\/]$/.test(display)) {
+          setDisplay(display + '0' + buttonValue);
+        } else {
+          setDisplay(display + buttonValue);
+        }
+      }
+    } else if (buttonValue === 'sqrt') {
+      // Find the last number and replace it with its square root
+      let displayArray = display.split(/([+\-*/])/).filter(Boolean);
+      let lastNumber = displayArray[displayArray.length - 1];
+      let sqrtLastNumber = `Math.sqrt(${lastNumber})`;
+
+      // Check if the last number exists and is not an operator
+      if (lastNumber && !['+', '-', '*', '/'].includes(lastNumber)) {
+        displayArray[displayArray.length - 1] = sqrtLastNumber;
+        setDisplay(displayArray.join(''));
+      } else {
+        // If the last number doesn't exist or is an operator, append the square root function to the display
+        setDisplay(display + 'Math.sqrt(');
+        setParenthesesCount(parenthesesCount + 1);
       }
     } else if (buttonValue === '%') {
       // Check if current number already contains a percent sign
@@ -155,57 +200,59 @@ const CalculatorScreen = () => {
     setLastButton(buttonValue);
   };
 
-  useEffect(() => {
-    try {
-      let resultTemp = display;
-      // Check if the last character is an operator, if so remove it
-      if (['+', '-', '*', '/'].includes(resultTemp.slice(-1))) {
-        resultTemp = resultTemp.slice(0, -1);
-      }
-      // Evaluate the expression
-      let result = eval(resultTemp);
-      // Check if result is a number (to avoid showing NaN or Infinity)
-      if (typeof result === 'number' && isFinite(result)) {
-        setResult(String(result));
-      } else {
-        setResult('');
-      }
-    } catch (error) {
-      setResult('');
-    }
-  }, [display]);
+ useEffect(() => {
+   try {
+     let resultTemp = display;
+     if (['+', '-', '*', '/'].includes(resultTemp.slice(-1))) {
+       resultTemp = resultTemp.slice(0, -1);
+     }
+     resultTemp = resultTemp.replace(/(\d+\.?\d*)\^2/g, '($1**2)');
+     let result = eval(resultTemp);
+     if (typeof result === 'number' && isFinite(result)) {
+       setResult(String(result));
+     } else {
+       setResult('');
+     }
+   } catch (error) {
+     setResult('');
+   }
+ }, [display]);
+
   return (
     <View style={styles.container}>
       <View style={displayContainerStyle}>
-        <Text style={displayTextStyle}>{display}</Text>
+        <Text style={displayTextStyle}>
+          {display.replace(/Math\.sqrt/g, '√')}
+        </Text>
+
         <Text style={resultTextStyle}>{result}</Text>
       </View>
 
       <View style={buttonsContainerStyle}>
         {[
-          {symbol: 'AC', value: 'AC', color: '#e67371', text: '#fff'},
-          {symbol: '%', value: '%'},
-          {symbol: '()', value: '()'},
-          {symbol: '⌫', value: 'Del', color: '#e67371', text: '#fff'},
-          {symbol: '1/x', value: '1/'},
-          {symbol: 'x²', value: '^2'},
-          {symbol: '√', value: 'sqrt'},
-          {symbol: '/', value: '/'},
-          {symbol: '7', value: '7'},
-          {symbol: '8', value: '8'},
-          {symbol: '9', value: '9'},
-          {symbol: 'x', value: '*'},
-          {symbol: '4', value: '4'},
-          {symbol: '5', value: '5'},
-          {symbol: '6', value: '6'},
-          {symbol: '-', value: '-'},
-          {symbol: '1', value: '1'},
-          {symbol: '2', value: '2'},
-          {symbol: '3', value: '3'},
-          {symbol: '+', value: '+'},
-          {symbol: '+/-', value: '+/-'},
-          {symbol: '0', value: '0'},
-          {symbol: '.', value: '.'},
+          {symbol: 'AC', value: 'AC', color: '#fff', text: '#e67371'},
+          {symbol: '%', value: '%', color: '#fff'},
+          {symbol: '()', value: '()', color: '#fff'},
+          {symbol: '⌫', value: 'Del', color: '#fff', text: '#e67371'},
+          {symbol: '1/x', value: '1/', color: '#fff'},
+          {symbol: 'x²', value: '^2', color: '#fff'},
+          {symbol: '√', value: 'sqrt', color: '#fff'},
+          {symbol: '/', value: '/', color: '#fff'},
+          {symbol: '7', value: '7', color: '#fff'},
+          {symbol: '8', value: '8', color: '#fff'},
+          {symbol: '9', value: '9', color: '#fff'},
+          {symbol: 'x', value: '*', color: '#fff'},
+          {symbol: '4', value: '4', color: '#fff'},
+          {symbol: '5', value: '5', color: '#fff'},
+          {symbol: '6', value: '6', color: '#fff'},
+          {symbol: '-', value: '-', color: '#fff'},
+          {symbol: '1', value: '1', color: '#fff'},
+          {symbol: '2', value: '2', color: '#fff'},
+          {symbol: '3', value: '3', color: '#fff'},
+          {symbol: '+', value: '+', color: '#fff'},
+          {symbol: '+/-', value: '+/-', color: '#fff'},
+          {symbol: '0', value: '0', color: '#fff'},
+          {symbol: '.', value: '.', color: '#fff'},
           {symbol: '=', value: '=', color: '#2b840c', text: '#fff'},
         ].map(button => (
           <TouchableOpacity
@@ -223,6 +270,7 @@ const CalculatorScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
   },
   displayContainer: {
     flex: 1,
@@ -236,10 +284,7 @@ const styles = StyleSheet.create({
     fontSize: 35,
     marginTop: 20,
   },
-    buttonsContainer: {
-      borderTopLeftRadius:30,
-        borderTopRightRadius: 30,
-      overflow:'hidden',
+  buttonsContainer: {
     flex: 2,
     flexDirection: 'row',
     flexWrap: 'wrap',

@@ -12,6 +12,10 @@ const TemperatureConverterScreen = () => {
   // Get the current theme colors
   const theme = useTheme();
 
+const displayContainerStyle = {
+  ...styles.conversionContainer,
+  backgroundColor: theme.dark ? theme.colors.buttonBackground : '#fff',
+};
   // Use colors based on the current theme
   const displayTextStyle = {
     ...styles.displayText,
@@ -20,7 +24,7 @@ const TemperatureConverterScreen = () => {
 
   const buttonsContainerStyle = {
     ...styles.buttonsContainer,
-    backgroundColor: theme.colors.background,
+    backgroundColor: theme.dark ? theme.colors.buttonBackground : '#fff',
   };
 
   const buttonStyle = color => ({
@@ -85,7 +89,7 @@ const TemperatureConverterScreen = () => {
   }, [display, fromUnit, toUnit]);
 
   return (
-    <View style={styles.container}>
+    <View style={displayContainerStyle}>
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={fromUnit}
@@ -117,23 +121,23 @@ const TemperatureConverterScreen = () => {
           {symbol: '7', value: '7'},
           {symbol: '8', value: '8'},
           {symbol: '9', value: '9'},
-          {symbol: 'Del', value: 'Del'},
+          {symbol: 'Del', value: 'Del', text: '#e67371'},
           {symbol: '4', value: '4'},
           {symbol: '5', value: '5'},
           {symbol: '6', value: '6'},
-          {symbol: 'AC', value: 'AC'},
+          {symbol: 'AC', value: 'AC', text: '#e67371'},
           {symbol: '1', value: '1'},
           {symbol: '2', value: '2'},
           {symbol: '3', value: '3'},
-          {symbol: '.', value: '.'},
+          {symbol: '.', value: '.', text: '#e67371'},
           {symbol: '0', value: '0'},
-          {symbol: '+/-', value: '+/-'},
+          {symbol: '+/-', value: '+/-', text: '#e67371'},
         ].map(button => (
           <TouchableOpacity
             key={button.value}
             style={buttonStyle()}
             onPress={() => onButtonPress(button.value)}>
-            <Text style={buttonTextStyle()}>{button.symbol}</Text>
+            <Text style={buttonTextStyle(button.text)}>{button.symbol}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -165,8 +169,6 @@ const styles = StyleSheet.create({
     width: '25%',
     height: '25%',
     padding: 20,
-    borderWidth: 1,
-    borderColor: '#ccc',
     justifyContent: 'center',
     alignItems: 'center',
   },

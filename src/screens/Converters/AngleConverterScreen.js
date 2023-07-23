@@ -20,6 +20,10 @@ const AngleConverterScreen = () => {
 
      const theme = useTheme();
 
+   const displayContainerStyle = {
+     ...styles.conversionContainer,
+     backgroundColor: theme.dark ? theme.colors.buttonBackground : '#fff',
+   };
      // Use colors based on the current theme
      const displayTextStyle = {
        ...styles.displayText,
@@ -28,18 +32,22 @@ const AngleConverterScreen = () => {
 
      const buttonsContainerStyle = {
        ...styles.buttonsContainer,
-       backgroundColor: theme.colors.background,
+       backgroundColor: theme.dark ? theme.colors.buttonBackground : '#fff',
      };
 
      const buttonStyle = color => ({
        ...styles.button,
-       backgroundColor: color || theme.colors.buttonBackground,
-       borderColor: color || theme.colors.border,
+       backgroundColor: theme.dark
+         ? color === '#2b840c'
+           ? color
+           : theme.colors.buttonBackground
+         : color || '#fff',
+       borderColor: theme.dark ? theme.colors.border : color || '#fff',
      });
 
      const buttonTextStyle = color => ({
        ...styles.buttonText,
-       color: color || theme.colors.buttonText,
+       color: color === '#2b840c' ? '#fff' : color || theme.colors.buttonText,
      });
     
 
@@ -75,7 +83,7 @@ const AngleConverterScreen = () => {
   }, [display, fromUnit, toUnit]);
 
   return (
-    <View style={styles.container}>
+    <View style={displayContainerStyle}>
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={fromUnit}
@@ -110,25 +118,25 @@ const AngleConverterScreen = () => {
 
       <View style={buttonsContainerStyle}>
         {[
-          {symbol: '7', value: '7'},
-          {symbol: '8', value: '8'},
-          {symbol: '9', value: '9'},
-          {symbol: 'Del', value: 'Del'},
-          {symbol: '4', value: '4'},
-          {symbol: '5', value: '5'},
-          {symbol: '6', value: '6'},
-          {symbol: 'AC', value: 'AC'},
-          {symbol: '1', value: '1'},
-          {symbol: '2', value: '2'},
-          {symbol: '3', value: '3'},
-          {symbol: '.', value: '.'},
-          {symbol: '0', value: '0'},
+          {symbol: '7', value: '7', color: '#fff'},
+          {symbol: '8', value: '8', color: '#fff'},
+          {symbol: '9', value: '9', color: '#fff'},
+          {symbol: 'Del', value: 'Del', color: '#fff', text: '#e67371'},
+          {symbol: '4', value: '4', color: '#fff'},
+          {symbol: '5', value: '5', color: '#fff'},
+          {symbol: '6', value: '6', color: '#fff'},
+          {symbol: 'AC', value: 'AC', color: '#fff', text: '#e67371'},
+          {symbol: '1', value: '1', color: '#fff'},
+          {symbol: '2', value: '2', color: '#fff'},
+          {symbol: '3', value: '3', color: '#fff'},
+          {symbol: '.', value: '.', color: '#fff', text: '#e67371'},
+          {symbol: '0', value: '0', color: '#fff'},
         ].map(button => (
           <TouchableOpacity
             key={button.value}
-            style={buttonStyle()}
+            style={buttonStyle(button.color)}
             onPress={() => onButtonPress(button.value)}>
-            <Text style={buttonTextStyle()}>{button.symbol}</Text>
+            <Text style={buttonTextStyle(button.text)}>{button.symbol}</Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -155,6 +163,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
+    backgroundColor:'#fff'
   },
   button: {
     width: '25%',
@@ -164,6 +173,7 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor:'#fff',
   },
   buttonText: {
     fontSize: 20,

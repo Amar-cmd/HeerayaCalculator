@@ -5,7 +5,9 @@ import {
   Text,
   View,
   ActivityIndicator,
+  StatusBar,
 } from 'react-native';
+
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -22,7 +24,7 @@ import {
   DefaultTheme,
   DarkTheme,
 } from '@react-navigation/native';
-import CalculatorScreen from './src/screens/CalculatorScreen';
+import CalculatorScreen from './src/screens/Calculators/CalculatorScreen';
 import SettingScreen from './src/screens/SettingScreen';
 import DarkMode from './src/styles/DarkMode';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -42,6 +44,9 @@ import AngleConverterScreen from './src/screens/Converters/AngleConverterScreen'
 import FrequencyConverterScreen from './src/screens/Converters/FrequencyConverterScreen';
 import DataTransferRateConverterScreen from './src/screens/Converters/DataTransferRateConverterScreen';
 import CurrencyConverterScreen from './src/screens/Converters/CurrencyConverterScreen';
+import DateCalculatorScreen from './src/screens/Calculators/DateCalculatorScreen';
+import ProgrammingCalculatorScreen from './src/screens/Calculators/ProgrammingCalculatorScreen';
+import ScientificCalculatorScreen from './src/screens/Calculators/ScientificCalculatorScreen';
 
 const Drawer = createDrawerNavigator();
 
@@ -73,21 +78,21 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
       />
       <DrawerItem
         label="Scientific Calculator"
-        onPress={() => props.navigation.navigate('Calculator')}
+        onPress={() => props.navigation.navigate('Scientific Calculator')}
         icon={({color, size}) => (
           <Ionicons name="calculator-outline" color={color} size={size} />
         )}
       />
       <DrawerItem
         label="Programming Calculator"
-        onPress={() => props.navigation.navigate('Calculator')}
+        onPress={() => props.navigation.navigate('Programming Calculator')}
         icon={({color, size}) => (
           <AntDesign name="codesquareo" color={color} size={size} />
         )}
       />
       <DrawerItem
         label="Date Calculator"
-        onPress={() => props.navigation.navigate('Calculator')}
+        onPress={() => props.navigation.navigate('Date Calculator')}
         icon={({color, size}) => (
           <AntDesign name="calendar" color={color} size={size} />
         )}
@@ -257,7 +262,17 @@ function MyDrawer({toggleTheme}: {toggleTheme: (mode: string) => void}) {
         headerTintColor: theme.colors.text, // set header tint color based on theme
       }}
       drawerContent={props => <CustomDrawerContent {...props} />}>
+      <Drawer.Screen
+        name="Programming Calculator"
+        component={ProgrammingCalculatorScreen}
+      />
       <Drawer.Screen name="Standard Calculator" component={CalculatorScreen} />
+      <Drawer.Screen
+        name="Scientific Calculator"
+        component={ScientificCalculatorScreen}
+      />
+
+      <Drawer.Screen name="Date Calculator" component={DateCalculatorScreen} />
       <Drawer.Screen name="Angle" component={AngleConverterScreen} />
       <Drawer.Screen name="Area" component={AreaConverterScreen} />
       <Drawer.Screen name="Currency" component={CurrencyConverterScreen} />
@@ -333,6 +348,11 @@ function App(): JSX.Element {
 
   return (
     <SafeAreaView style={{flex: 1}}>
+      <StatusBar
+        backgroundColor={theme.dark ? '#171717' : 'white'}
+        barStyle={theme.dark ? 'light-content' : 'dark-content'}
+      />
+
       <NavigationContainer theme={theme}>
         <MyDrawer toggleTheme={toggleTheme} />
       </NavigationContainer>
