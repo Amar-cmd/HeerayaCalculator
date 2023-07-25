@@ -3,6 +3,7 @@ import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import axios from 'axios';
 import {useTheme} from '@react-navigation/native';
+import Ripple from 'react-native-material-ripple'; // import Ripple
 
 const CurrencyConverterScreen = () => {
   const [display, setDisplay] = useState('1');
@@ -159,12 +160,13 @@ const CurrencyConverterScreen = () => {
           {symbol: '.', value: '.', text: '#e67371'},
           {symbol: '0', value: '0'},
         ].map(button => (
-          <TouchableOpacity
+          <Ripple
+            rippleColor={theme.dark ? '#fff' : '#000'}
             key={button.value}
             style={buttonStyle()}
             onPress={() => onButtonPress(button.value)}>
             <Text style={buttonTextStyle(button.text)}>{button.symbol}</Text>
-          </TouchableOpacity>
+          </Ripple>
         ))}
       </View>
     </View>

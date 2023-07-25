@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {useTheme} from '@react-navigation/native';
+import Ripple from 'react-native-material-ripple'; // import Ripple
 
 const ProgrammerCalculatorScreen = () => {
   const [displayValue, setDisplayValue] = useState('');
@@ -14,6 +16,49 @@ const [firstOperand, setFirstOperand] = useState('');
     oct: '',
     bin: '',
   });
+
+   const theme = useTheme();
+
+   const displayContainerStyle = {
+     ...styles.displayArea,
+     backgroundColor: theme.dark ? theme.colors.buttonBackground : '#fff',
+   };
+   // Use colors based on the current theme
+   const displayTextStyle = {
+     ...styles.displayText,
+     color: theme.dark? theme.colors.text : '#000',
+   };
+
+   const buttonsContainerStyle = {
+     ...styles.buttonContainer,
+     backgroundColor: theme.dark ? theme.colors.buttonBackground : '#fff',
+   };
+
+   const buttonStyle = color => ({
+     ...styles.button,
+     backgroundColor: theme.dark
+       ? color === '#2b840c'
+         ? color
+         : theme.colors.buttonBackground
+       : color || '#fff',
+     borderColor: theme.dark ? theme.colors.border : color || '#fff',
+   });
+
+   const buttonTextStyle = color => ({
+     ...styles.buttonText,
+     color: color === '#2b840c' ? '#fff' : color || theme.colors.buttonText,
+  });
+  
+   const columnButton = color => ({
+     ...styles.buttonText,
+     color: color === '#2b840c' ? '#fff' : color || theme.colors.buttonText,
+   });
+    
+  const buttonColumnTextStyle = {
+    ...styles.buttonTextBlack,
+    color: theme.colors.text,
+  };
+  
 const formatHexBin = str => {
   const reversedStr = str.split('').reverse().join('');
   const formattedReversedStr = reversedStr.replace(/(.{4})/g, '$1 ').trim();
@@ -83,71 +128,6 @@ const formatDec = str => Number(str).toLocaleString('en-IN');
    convertValue(displayValue, selectedSystem);
  }, [displayValue, selectedSystem]);
 
-//  const handlePress = value => {
-//   if (value === 'Del') {
-//     setDisplayValue(prevDisplayValue => prevDisplayValue.slice(0, -1));
-//   } else if (
-//     ['AND', 'OR', 'NOT', 'NAND', 'NOR', 'XOR', '+', '*', '/'].includes(value)
-//   ) {
-//     setDisplayValue(prevDisplayValue => prevDisplayValue + ' ' + value + ' ');
-//     setNextInputClears(false);
-//   } else if (value === '-') {
-//     // Add condition for minus
-//     setDisplayValue(prevDisplayValue =>
-//       prevDisplayValue === '' ? value : prevDisplayValue + ' ' + value + ' ',
-//     );
-//   } else if (value === '=') {
-//     // Separate the operands from displayValue
-//     const operationArray = displayValue.split(' ');
-//     const firstOperand = parseInt(operationArray[0]);
-//     const operator = operationArray[1];
-//     const secondOperand = parseInt(operationArray[2]);
-//     let result;
-//     switch (operator) {
-//       case 'AND':
-//         result = firstOperand & secondOperand;
-//         break;
-//       case 'OR':
-//         result = firstOperand | secondOperand;
-//         break;
-//       case 'NOT':
-//         result = ~firstOperand;
-//         break;
-//       case 'NAND':
-//         result = ~(firstOperand & secondOperand);
-//         break;
-//       case 'NOR':
-//         result = ~(firstOperand | secondOperand);
-//         break;
-//       case 'XOR':
-//         result = firstOperand ^ secondOperand;
-//         break;
-//       case '+':
-//         result = firstOperand + secondOperand;
-//         break;
-//       case '-':
-//         result = firstOperand - secondOperand;
-//         break;
-//       case '*':
-//         result = firstOperand * secondOperand;
-//         break;
-//       case '/':
-//         result = firstOperand / secondOperand;
-//         break;
-//       default:
-//         break;
-//     }
-//     setDisplayValue(result.toString());
-//   } else {
-//     if (nextInputClears) {
-//       setDisplayValue(value);
-//       setNextInputClears(false);
-//     } else {
-//       setDisplayValue(prevDisplayValue => prevDisplayValue + value);
-//     }
-//   }
-//  };
-  
   const handlePress = value => {
     if (value === 'Del') {
       setDisplayValue(prevDisplayValue => prevDisplayValue.slice(0, -1));
@@ -314,81 +294,69 @@ const formatDec = str => Number(str).toLocaleString('en-IN');
   };
 
   const buttonColumnStyle = system => {
-    if (system === selectedSystem) {
-      return styles.buttonColumnButtonSelected;
-    } else {
-      return styles.buttonColumnButton;
-    }
+    return theme.dark
+      ? system === selectedSystem
+        ? {
+            ...styles.buttonColumnButtonSelected,
+          backgroundColor: theme.colors.background,
+            padding:8,
+          }
+        : {
+            ...styles.buttonColumnButton,
+          }
+      : system === selectedSystem
+      ? styles.buttonColumnButtonSelected
+      : styles.buttonColumnButton;
   };
+
   return (
     <View style={styles.container}>
       {/* Display Area */}
-      <View style={styles.displayArea}>
-        <Text style={styles.displayText}>{displayValue}</Text>
+      <View style={displayContainerStyle}>
+        <Text style={displayTextStyle}>{displayValue}</Text>
       </View>
 
-      {/* Button column for binary, octal, decimal, hexa */}
-      <View style={styles.buttonColumn}>
-        <TouchableOpacity
+      <View
+        style={[
+          displayContainerStyle,
+          {margin: 0, alignItems: 'center', justifyContent: 'space-evenly'},
+        ]}>
+        <Ripple
           onPress={() => handleSystemPress('binary')}
           style={buttonColumnStyle('binary')}>
-          <Text
-            style={[
-              styles.buttonTextBlack,
-              {marginRight: 10, flexWrap: 'wrap'},
-            ]}>
-            BIN
-          </Text>
-          <Text
-            style={styles.buttonTextBlack}
-            numberOfLines={3}
-            ellipsizeMode="middle">
-            {convertedValues.bin}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+          <Text style={buttonColumnTextStyle}>BIN</Text>
+          <Text style={buttonColumnTextStyle}>{convertedValues.bin}</Text>
+        </Ripple>
+        <Ripple
           onPress={() => handleSystemPress('octal')}
           style={buttonColumnStyle('octal')}>
-          <Text style={[styles.buttonTextBlack, {marginRight: 10}]}>OCT</Text>
-          <Text
-            style={styles.buttonTextBlack}
-            numberOfLines={5}
-            ellipsizeMode="middle">
-            {convertedValues.oct}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+          <Text style={buttonColumnTextStyle}>OCT</Text>
+          <Text style={buttonColumnTextStyle}>{convertedValues.oct}</Text>
+        </Ripple>
+        <Ripple
           onPress={() => handleSystemPress('decimal')}
           style={buttonColumnStyle('decimal')}>
-          <Text style={[styles.buttonTextBlack, {marginRight: 10}]}>DEC</Text>
-          <Text
-            style={styles.buttonTextBlack}
-            numberOfLines={3}
-            ellipsizeMode="middle">
-            {convertedValues.dec}
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity
+          <Text style={buttonColumnTextStyle}>DEC</Text>
+          <Text style={buttonColumnTextStyle}>{convertedValues.dec}</Text>
+        </Ripple>
+        <Ripple
           onPress={() => handleSystemPress('hexa')}
           style={buttonColumnStyle('hexa')}>
-          <Text style={[styles.buttonTextBlack, {marginRight: 10}]}>HEX</Text>
-          <Text
-            style={styles.buttonTextBlack}
-            numberOfLines={3}
-            ellipsizeMode="middle">
+          <Text style={buttonColumnTextStyle}>HEX</Text>
+          <Text style={buttonColumnTextStyle}>
             {convertedValues.hex.toUpperCase()}
           </Text>
-        </TouchableOpacity>
+        </Ripple>
       </View>
 
       {/* Button Container */}
-      <View style={styles.buttonContainer}>
+      <View style={buttonsContainerStyle}>
         {[
           {symbol: 'A', value: 'A'},
           {symbol: 'AND', value: 'AND'},
           {symbol: 'OR', value: 'OR'},
           {symbol: 'NOT', value: 'NOT'},
-          {symbol: '⌫', value: 'Del'},
+          {symbol: '⌫', value: 'Del', text: '#e67371'},
           {symbol: 'B', value: 'B'},
           {symbol: 'NAND', value: 'NAND'},
           {symbol: 'NOR', value: 'NOR'},
@@ -411,22 +379,25 @@ const formatDec = str => Number(str).toLocaleString('en-IN');
           {symbol: '+', value: '+'},
           {symbol: 'F', value: 'F'},
           {symbol: '0', value: '0'},
-          {symbol: '=', value: '='},
+          {symbol: '=', value: '=', color: '#2b840c', text: '#fff'},
         ].map(button => (
-          <TouchableOpacity
+          <Ripple
+            rippleColor={theme.dark ? '#fff' : '#000'}
             key={button.value}
-            style={
-              buttonEnabled(button.value)
-                ? styles.buttonEnabled
-                : styles.buttonDisabled
-            }
+            style={buttonStyle(button.color)}
             onPress={() =>
               buttonEnabled(button.value) && handlePress(button.value)
             }
-            disabled={!buttonEnabled(button.value)} // Disable button when not enabled
-          >
-            <Text style={styles.buttonText}>{button.symbol}</Text>
-          </TouchableOpacity>
+            disabled={!buttonEnabled(button.value)}>
+            <Text
+              style={[
+                buttonEnabled(button.value)
+                  ? buttonTextStyle(button.text)
+                  : {opacity: 0.3},
+              ]}>
+              {button.symbol}
+            </Text>
+          </Ripple>
         ))}
       </View>
     </View>
@@ -462,17 +433,18 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 5,
+    // marginBottom: 5,
+    padding: 5,
   },
   buttonColumnButtonSelected: {
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 5,
+    // marginBottom: 5,
     borderLeftColor: 'blue',
     borderLeftWidth: 5,
-    borderRadius: 3,
-    paddingLeft: 10,
+    // borderRadius: 3,
+    padding: 5,
   },
   button: {
     width: '19%',
@@ -494,21 +466,19 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontSize: 18,
-    color: '#fff',
+    // color: '#fff',
   },
   buttonTextBlack: {
     textAlign: 'right',
     fontSize: 15,
-    color: '#000',
+    // color: '#000',
   },
   buttonContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#003F78',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    // backgroundColor: '#003F78',
     overflow: 'hidden',
   },
   resultText: {
@@ -523,7 +493,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     margin: 1,
-    backgroundColor: '#003F78',
+    // backgroundColor: '#003F78',
     borderRadius: 4,
   },
   buttonDisabled: {

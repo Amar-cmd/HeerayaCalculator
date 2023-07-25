@@ -1,39 +1,35 @@
 import React, {useState} from 'react';
-import {
-  Text,
-  View,
-  TouchableOpacity,
-  StyleSheet,
-  Modal,
-  Button,
-} from 'react-native';
+import {Text, View, TouchableOpacity, StyleSheet, Modal} from 'react-native';
+import {RadioButton} from 'react-native-paper'; // Import RadioButton
 import {useTheme} from '@react-navigation/native'; // import useTheme
+import Ripple from 'react-native-material-ripple'; // import Ripple
 
 const SettingScreen = ({toggleTheme}) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [checked, setChecked] = useState('light'); // for RadioButton
   const theme = useTheme(); // use the theme here
 
-    const itemStyle = {
-      ...styles.item,
-      backgroundColor: theme.colors.card, // use theme color for background
-    };
+  const itemStyle = {
+    ...styles.item,
+    backgroundColor: theme.colors.card, // use theme color for background
+  };
 
-    const textStyle = {
-      ...styles.text,
-      color: theme.colors.text, // use theme color for text
-    };
+  const textStyle = {
+    ...styles.text,
+    color: theme.colors.text, // use theme color for text
+  };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={itemStyle}>
+      <Ripple style={itemStyle}>
         <Text style={textStyle}>Theme</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={itemStyle} onPress={() => setModalVisible(true)}>
+      </Ripple>
+      <Ripple style={itemStyle} onPress={() => setModalVisible(true)}>
         <Text style={textStyle}>Mode</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={itemStyle}>
+      </Ripple>
+      <Ripple style={itemStyle}>
         <Text style={textStyle}>About</Text>
-      </TouchableOpacity>
+      </Ripple>
       <Modal
         animationType="slide"
         transparent={true}
@@ -43,17 +39,36 @@ const SettingScreen = ({toggleTheme}) => {
         }}>
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            <TouchableOpacity
+              style={styles.closeButton}
+              onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={styles.closeButtonText}>X</Text>
+            </TouchableOpacity>
             <Text style={styles.modalText}>Choose a Mode</Text>
-            <View style={styles.buttonContainer}>
-              <Button title="Light Mode" onPress={() => toggleTheme('light')} />
-              <Button title="Dark Mode" onPress={() => toggleTheme('dark')} />
-              <TouchableOpacity
-                style={[styles.button, styles.buttonClose]}
-                onPress={() => setModalVisible(!modalVisible)}>
-                <Text style={styles.textStyle}>Hide Modal</Text>
-              </TouchableOpacity>
-            </View>
-            {/* rest of your Modal code */}
+            <Ripple
+              style={styles.radioContainer}
+              onPress={() => {
+                toggleTheme('light');
+                setChecked('light');
+              }}>
+              <RadioButton
+                value="light"
+                status={checked === 'light' ? 'checked' : 'unchecked'}
+              />
+              <Text style={styles.radioText}>Light Mode</Text>
+            </Ripple>
+            <Ripple
+              style={styles.radioContainer}
+              onPress={() => {
+                toggleTheme('dark');
+                setChecked('dark');
+              }}>
+              <RadioButton
+                value="dark"
+                status={checked === 'dark' ? 'checked' : 'unchecked'}
+              />
+              <Text style={styles.radioText}>Dark Mode</Text>
+            </Ripple>
           </View>
         </View>
       </Modal>
@@ -122,6 +137,24 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     textAlign: 'center',
     color: 'black',
+  },
+
+  closeButton: {
+    position: 'absolute',
+    right: 10,
+    top: 10,
+    padding:5,
+  },
+  closeButtonText: {
+    fontSize: 20,
+    color: 'red',
+  },
+  radioContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  radioText: {
+    fontSize: 18,
   },
 });
 

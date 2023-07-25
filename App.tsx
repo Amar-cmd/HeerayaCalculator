@@ -47,6 +47,7 @@ import CurrencyConverterScreen from './src/screens/Converters/CurrencyConverterS
 import DateCalculatorScreen from './src/screens/Calculators/DateCalculatorScreen';
 import ProgrammingCalculatorScreen from './src/screens/Calculators/ProgrammingCalculatorScreen';
 import ScientificCalculatorScreen from './src/screens/Calculators/ScientificCalculatorScreen';
+import SimpleInterestCalculator from './src/screens/Calculators/SimpleInterestCalculator';
 
 const Drawer = createDrawerNavigator();
 
@@ -93,6 +94,13 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
       <DrawerItem
         label="Date Calculator"
         onPress={() => props.navigation.navigate('Date Calculator')}
+        icon={({color, size}) => (
+          <AntDesign name="calendar" color={color} size={size} />
+        )}
+      />
+      <DrawerItem
+        label="Interest Calculator"
+        onPress={() => props.navigation.navigate('Interest Calculator')}
         icon={({color, size}) => (
           <AntDesign name="calendar" color={color} size={size} />
         )}
@@ -263,6 +271,10 @@ function MyDrawer({toggleTheme}: {toggleTheme: (mode: string) => void}) {
       }}
       drawerContent={props => <CustomDrawerContent {...props} />}>
       <Drawer.Screen
+        name="Interest Calculator"
+        component={SimpleInterestCalculator}
+      />
+      <Drawer.Screen
         name="Programming Calculator"
         component={ProgrammingCalculatorScreen}
       />
@@ -273,6 +285,7 @@ function MyDrawer({toggleTheme}: {toggleTheme: (mode: string) => void}) {
       />
 
       <Drawer.Screen name="Date Calculator" component={DateCalculatorScreen} />
+
       <Drawer.Screen name="Angle" component={AngleConverterScreen} />
       <Drawer.Screen name="Area" component={AreaConverterScreen} />
       <Drawer.Screen name="Currency" component={CurrencyConverterScreen} />

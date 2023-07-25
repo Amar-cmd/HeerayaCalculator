@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {useTheme} from '@react-navigation/native';
+import Ripple from 'react-native-material-ripple'; // import Ripple
 
 const AngleConverterScreen = () => {
   const [display, setDisplay] = useState('0');
@@ -132,12 +133,13 @@ const AngleConverterScreen = () => {
           {symbol: '.', value: '.', color: '#fff', text: '#e67371'},
           {symbol: '0', value: '0', color: '#fff'},
         ].map(button => (
-          <TouchableOpacity
+          <Ripple
             key={button.value}
+            rippleColor={theme.dark ? '#fff' : '#000'}
             style={buttonStyle(button.color)}
             onPress={() => onButtonPress(button.value)}>
             <Text style={buttonTextStyle(button.text)}>{button.symbol}</Text>
-          </TouchableOpacity>
+          </Ripple>
         ))}
       </View>
     </View>

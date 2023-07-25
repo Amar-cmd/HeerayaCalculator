@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import DarkMode from '../../styles/DarkMode';
+import Ripple from 'react-native-material-ripple'; // import Ripple
 
 const CalculatorScreen = () => {
   const [display, setDisplay] = useState('');
@@ -255,12 +256,14 @@ const CalculatorScreen = () => {
           {symbol: '.', value: '.', color: '#fff'},
           {symbol: '=', value: '=', color: '#2b840c', text: '#fff'},
         ].map(button => (
-          <TouchableOpacity
+          <Ripple
+            rippleColor={theme.dark ? '#fff' : '#000'}
+            // rippleDuration={200}
             key={button.value}
             style={buttonStyle(button.color)}
             onPress={() => onButtonPress(button.value)}>
             <Text style={buttonTextStyle(button.text)}>{button.symbol}</Text>
-          </TouchableOpacity>
+          </Ripple>
         ))}
       </View>
     </View>
