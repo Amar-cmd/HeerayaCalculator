@@ -40,7 +40,7 @@ const VolumeConverterScreen = () => {
   };
    const displayTextStyle = {
      ...styles.displayText,
-     color: theme.colors.text,
+     color: theme.colors.buttonText,
    };
 
    const buttonsContainerStyle = {
@@ -102,7 +102,7 @@ const VolumeConverterScreen = () => {
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={fromUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           onValueChange={itemValue => setFromUnit(itemValue)}>
           <Picker.Item label="US liquid gallon" value="US liquid gallon" />
           <Picker.Item label="US liquid quart" value="US liquid quart" />
@@ -136,7 +136,7 @@ const VolumeConverterScreen = () => {
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={toUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           onValueChange={itemValue => setToUnit(itemValue)}>
           <Picker.Item label="US liquid gallon" value="US liquid gallon" />
           <Picker.Item label="US liquid quart" value="US liquid quart" />

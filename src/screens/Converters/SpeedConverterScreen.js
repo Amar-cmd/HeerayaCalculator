@@ -37,7 +37,7 @@ const SpeedConverterScreen = () => {
     // Use colors based on the current theme
     const displayTextStyle = {
       ...styles.displayText,
-      color: theme.colors.text,
+      color: theme.colors.buttonText,
     };
 
     const buttonsContainerStyle = {
@@ -91,7 +91,7 @@ const SpeedConverterScreen = () => {
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={fromUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           onValueChange={itemValue => setFromUnit(itemValue)}>
           {Object.entries(speedUnits).map(([unit, {symbol}]) => (
             <Picker.Item
@@ -107,7 +107,7 @@ const SpeedConverterScreen = () => {
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={toUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           onValueChange={itemValue => setToUnit(itemValue)}>
           {Object.entries(speedUnits).map(([unit, {symbol}]) => (
             <Picker.Item

@@ -30,7 +30,7 @@ const TimeConverterScreen = () => {
   // Use colors based on the current theme
   const displayTextStyle = {
     ...styles.displayText,
-    color: theme.colors.text,
+    color: theme.colors.buttonText,
   };
 
   const buttonsContainerStyle = {
@@ -89,7 +89,7 @@ const TimeConverterScreen = () => {
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={fromUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           onValueChange={itemValue => setFromUnit(itemValue)}>
           {Object.entries(timeUnits).map(([unit, {symbol}]) => (
             <Picker.Item
@@ -105,7 +105,7 @@ const TimeConverterScreen = () => {
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={toUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           onValueChange={itemValue => setToUnit(itemValue)}>
           {Object.entries(timeUnits).map(([unit, {symbol}]) => (
             <Picker.Item

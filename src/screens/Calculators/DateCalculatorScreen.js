@@ -35,7 +35,7 @@ const DateCalculatorScreen = () => {
   
    const displayTextStyle = {
      ...styles.heading,
-     color: theme.colors.text,
+     color: theme.colors.buttonText,
    };
 
    const buttonStyle = color => ({
@@ -111,10 +111,15 @@ const DateCalculatorScreen = () => {
       <ScrollView style={displayContainerStyle}>
         <View style={displayContainerStyle}>
           <Text style={displayTextStyle}>Conversion Type:</Text>
-          <View style={{borderWidth: 1, borderColor: '#fff', marginTop: 20}}>
+          <View
+            style={{
+              borderWidth: 1,
+              borderColor: theme.colors.buttonText,
+              marginTop: 20,
+            }}>
             <Picker
               selectedValue={selectedOption}
-              style={{color: theme.colors.text}}
+              style={{color: theme.colors.buttonText}}
               onValueChange={(itemValue, itemIndex) =>
                 setSelectedOption(itemValue)
               }>
@@ -290,7 +295,7 @@ const DateCalculatorScreen = () => {
                   </Text>
                 </TouchableOpacity>
               </View>
-              <Text style={theme.dark ? {color: '#fff'} : {color: '#000'}}>
+              <Text style={{color: theme.colors.buttonText}}>
                 Number of Years: {numYears}
               </Text>
               <TextInput
@@ -299,9 +304,9 @@ const DateCalculatorScreen = () => {
                 onChangeText={setNumYears}
                 placeholder="0"
                 // style={styles.input}
-                style={theme.dark ? {color: '#fff'} : {color: '#000'}}
+                style={{color: theme.colors.buttonText}}
               />
-              <Text style={theme.dark ? {color: '#fff'} : {color: '#000'}}>
+              <Text style={{color: theme.colors.buttonText}}>
                 Number of Months: {numMonths}
               </Text>
 
@@ -311,9 +316,9 @@ const DateCalculatorScreen = () => {
                 onChangeText={setNumMonths}
                 placeholder="0"
                 // style={styles.input}
-                style={theme.dark ? {color: '#fff'} : {color: '#000'}}
+                style={{color: theme.colors.buttonText}}
               />
-              <Text style={theme.dark ? {color: '#fff'} : {color: '#000'}}>
+              <Text style={{color: theme.colors.buttonText}}>
                 Number of Weeks: {numWeeks}
               </Text>
 
@@ -323,9 +328,9 @@ const DateCalculatorScreen = () => {
                 onChangeText={setNumWeeks}
                 placeholder="0"
                 // style={styles.input}
-                style={theme.dark ? {color: '#fff'} : {color: '#000'}}
+                style={{color: theme.colors.buttonText}}
               />
-              <Text style={theme.dark ? {color: '#fff'} : {color: '#000'}}>
+              <Text style={{color: theme.colors.buttonText}}>
                 Number of Days: {numDays}
               </Text>
 
@@ -335,7 +340,7 @@ const DateCalculatorScreen = () => {
                 onChangeText={setNumDays}
                 placeholder="0"
                 // style={styles.input}
-                style={theme.dark ? {color: '#fff'} : {color: '#000'}}
+                style={{color: theme.colors.buttonText}}
               />
 
               <Text style={styles.resultText}>

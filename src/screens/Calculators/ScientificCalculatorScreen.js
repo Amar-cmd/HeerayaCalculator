@@ -7,11 +7,15 @@ import {
   ToastAndroid,
   Platform,
   Alert,
+  Clipboard,
+  Modal,
+  ScrollView,
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import * as math from 'mathjs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-
+import Feather from 'react-native-vector-icons/Feather';
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'; 
 
 const ScientificCalculatorScreen = () => {
   const [display, setDisplay] = useState('');
@@ -19,10 +23,17 @@ const ScientificCalculatorScreen = () => {
   const [secondMode, setSecondMode] = useState(false);
   const [result, setResult] = useState('');
   const [parenthesesCount, setParenthesesCount] = useState(0);
-  const [isDeg, setIsDeg] = useState(true); // New state for degree mode
+  const [isDeg, setIsDeg] = useState(true); 
   const [resetDisplay, setResetDisplay] = useState(false);
-  const [secondTrigoMode, setSecondTrigoMode] = useState(false); // For second mode
-  const [hypMode, setHypMode] = useState(false); // For hyperbolic mode
+  const [secondTrigoMode, setSecondTrigoMode] = useState(false); 
+  const [hypMode, setHypMode] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+const [history, setHistory] = useState([]);
+
+  
+  const copyToClipboard = () => {
+    Clipboard.setString(display);
+  };
 
   const theme = useTheme();
   const displayContainerStyle = {
@@ -31,11 +42,11 @@ const ScientificCalculatorScreen = () => {
   };
   const displayTextStyle = {
     ...styles.displayText,
-    color: theme.colors.text,
+    color: theme.colors.buttonText,
   };
   const resultTextStyle = {
     ...styles.resultText,
-    color: theme.colors.text,
+    color: theme.colors.buttonText,
   };
   const buttonsContainerStyle = {
     ...styles.buttonsContainer,
@@ -51,6 +62,22 @@ const ScientificCalculatorScreen = () => {
     color: color || theme.colors.buttonText,
   });
 
+   const functionButtonStyle = {
+     ...styles.functionButton,
+     backgroundColor: theme.colors.card,
+   };
+   const functionButtonTextStyle = {
+     ...styles.functionButtonText,
+     color: theme.colors.text,
+   };
+   const trigoButtonStyle = {
+     ...styles.upperContainerButton,
+     backgroundColor: theme.colors.card,
+   };
+   const trigoButtonTextStyle = {
+     ...styles.buttonText,
+     color: theme.colors.text,
+   };
   const modeButtons = [
     {
       symbol: '',
@@ -121,33 +148,33 @@ const ScientificCalculatorScreen = () => {
       <View style={styles.upperContainer}>
         <View style={styles.upperContainerRow}>
           <TouchableOpacity
-            style={styles.upperContainerButton}
+            style={trigoButtonStyle}
             onPress={() => setSecondTrigoMode(!secondTrigoMode)}>
-            <Text style={styles.buttonText}>
+            <Text style={trigoButtonTextStyle}>
               {secondTrigoMode ? '1st' : '2nd'}
             </Text>
           </TouchableOpacity>
           {buttons.slice(0, 3).map(button => (
             <TouchableOpacity
               key={button.value}
-              style={styles.upperContainerButton}
+              style={trigoButtonStyle}
               onPress={() => onButtonPress(button.value)}>
-              <Text style={styles.buttonText}>{button.symbol}</Text>
+              <Text style={trigoButtonTextStyle}>{button.symbol}</Text>
             </TouchableOpacity>
           ))}
         </View>
         <View style={styles.upperContainerRow}>
           <TouchableOpacity
-            style={styles.upperContainerButton}
+            style={trigoButtonStyle}
             onPress={() => setHypMode(!hypMode)}>
-            <Text style={styles.buttonText}>{hypMode ? 'hyp-' : 'hyp'}</Text>
+            <Text style={trigoButtonTextStyle}>{hypMode ? 'hyp-' : 'hyp'}</Text>
           </TouchableOpacity>
           {buttons.slice(3, 7).map(button => (
             <TouchableOpacity
               key={button.value}
-              style={styles.upperContainerButton}
+              style={trigoButtonStyle}
               onPress={() => onButtonPress(button.value)}>
-              <Text style={styles.buttonText}>{button.symbol}</Text>
+              <Text style={trigoButtonTextStyle}>{button.symbol}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -171,9 +198,9 @@ const ScientificCalculatorScreen = () => {
           {buttons.slice(0, 2).map(button => (
             <TouchableOpacity
               key={button.value}
-              style={styles.upperContainerButton}
+              style={trigoButtonStyle}
               onPress={() => onButtonPress(button.value)}>
-              <Text style={styles.buttonText}>{button.symbol}</Text>
+              <Text style={trigoButtonTextStyle}>{button.symbol}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -181,9 +208,9 @@ const ScientificCalculatorScreen = () => {
           {buttons.slice(2, 4).map(button => (
             <TouchableOpacity
               key={button.value}
-              style={styles.upperContainerButton}
+              style={trigoButtonStyle}
               onPress={() => onButtonPress(button.value)}>
-              <Text style={styles.buttonText}>{button.symbol}</Text>
+              <Text style={trigoButtonTextStyle}>{button.symbol}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -276,11 +303,20 @@ const ScientificCalculatorScreen = () => {
       ];
 
   const onButtonPress = buttonValue => {
+    
     if (buttonValue === 'C') {
       setDisplay('');
       setResult('');
       setParenthesesCount(0);
-    } else if (buttonValue === '.') {
+    } else if (['+', '-', '*', '/'].includes(buttonValue)) {
+    // If the last character in the display is an operator, replace it with the new operator
+    if (/[+\-*/]$/.test(display)) {
+      setDisplay(display.slice(0, -1) + buttonValue);
+    } else {
+      // If the last character is not an operator, append the new operator
+      setDisplay(display + buttonValue);
+    }
+  } else if (buttonValue === '.') {
       // Check if current number already contains a dot
       const currentNumber = display.split(/[\+\-\*\/]/).slice(-1)[0];
       if (!/\./.test(currentNumber)) {
@@ -452,6 +488,11 @@ const ScientificCalculatorScreen = () => {
         setDisplay(result.toString());
         setParenthesesCount(0);
         setResetDisplay(true);
+                setHistory([
+                  ...history,
+                  {display, result: String(result)},
+                ]);
+
       } catch (error) {
         // If the expression is invalid, show an error
         setDisplay(display + buttonValue);
@@ -491,10 +532,34 @@ const ScientificCalculatorScreen = () => {
         // If false, there is no number before, so just append the function
         setDisplay(display + 'e^');
       }
+    }
+    // else if (buttonValue === 'π') {
+    //   setDisplay(display + Math.PI.toString());
+    // } else if (buttonValue === 'e') {
+    //   setDisplay(display + Math.E.toString());
+    // }
+    else if (buttonValue === 'e') {
+      // If the last character in the display is 'e', replace it with the value of e
+      if (/e$/.test(display)) {
+        setDisplay(display.slice(0, -1) + Math.E.toString());
+      } else if (/\d$/.test(display)) {
+        // If the last character is a digit, append a multiplication sign and the value of e
+        setDisplay(display + '*' + Math.E.toString());
+      } else {
+        // If the last character is not 'e' or a digit, append the value of e
+        setDisplay(display + Math.E.toString());
+      }
     } else if (buttonValue === 'π') {
-      setDisplay(display + Math.PI.toString());
-    } else if (buttonValue === 'e') {
-      setDisplay(display + Math.E.toString());
+      // If the last character in the display is 'π', replace it with the value of π
+      if (/π$/.test(display)) {
+        setDisplay(display.slice(0, -1) + Math.PI.toString());
+      } else if (/\d$/.test(display)) {
+        // If the last character is a digit, append a multiplication sign and the value of π
+        setDisplay(display + '*' + Math.PI.toString());
+      } else {
+        // If the last character is not 'π' or a digit, append the value of π
+        setDisplay(display + Math.PI.toString());
+      }
     } else if (buttonValue === 'mod') {
       setDisplay(display + ' mod ');
     } else if (buttonValue === '%') {
@@ -505,15 +570,55 @@ const ScientificCalculatorScreen = () => {
       );
       const percentage = lastNumber / 100;
       setDisplay(displayWithoutLastNumber + percentage.toString());
+      // } else if (buttonValue === 'n!') {
+      //   try {
+      //     const num = parseFloat(display);
+      //     if (isNaN(num)) {
+      //       throw new Error('Invalid input');
+      //     }
+      //     const result = math.factorial(num);
+      //     setResult(result);
+      //     setDisplay(result.toString());
+      //   } catch (error) {
+      //     if (Platform.OS === 'android') {
+      //       ToastAndroid.show('Invalid input', ToastAndroid.SHORT);
+      //       setResult('');
+      //       setDisplay('Error!');
+      //     } else {
+      //       Alert.alert('Error', 'Invalid input');
+      //     }
+      //   }
+      // }
     } else if (buttonValue === 'n!') {
       try {
-        const num = parseFloat(display);
-        if (isNaN(num)) {
+        // Split the display string into an array of numbers and operators
+        let displayArray = display.split(/([+\-*/])/).filter(Boolean);
+
+        // Get the last number in the array (the number to factorialize)
+        let lastNumber = displayArray.pop();
+
+        // Check if the last number is a valid number
+        if (isNaN(lastNumber)) {
           throw new Error('Invalid input');
         }
-        const result = math.factorial(num);
-        setResult(result);
-        setDisplay(result.toString());
+
+        // Calculate the factorial of the last number
+        let factorial = math.factorial(parseFloat(lastNumber));
+
+        // Push the factorial back onto the array
+        displayArray.push(factorial.toString());
+
+        // Join the array back into a string and set the display
+        const newDisplay = displayArray.join('');
+        setDisplay(newDisplay);
+        setResult(newDisplay);
+        setResetDisplay(true);
+        // setHistory([...history, {display, result: String(newDisplay)}]);
+        setHistory([
+          ...history,
+          {display: display + '!', result: String(newDisplay)},
+        ]);
+
       } catch (error) {
         if (Platform.OS === 'android') {
           ToastAndroid.show('Invalid input', ToastAndroid.SHORT);
@@ -523,7 +628,7 @@ const ScientificCalculatorScreen = () => {
           Alert.alert('Error', 'Invalid input');
         }
       }
-    } else if (buttonValue === 'sqrt') {
+    }  else if (buttonValue === 'sqrt') {
       setDisplay(display + '√(');
       setParenthesesCount(parenthesesCount + 1);
     } else if (
@@ -708,7 +813,6 @@ const ScientificCalculatorScreen = () => {
           }
 
           setDisplay(displayWithoutLastNumber + result.toString());
-
           setResult(result.toString());
         } else {
           // If the display is empty or ends with an operator, show an error
@@ -844,6 +948,33 @@ const ScientificCalculatorScreen = () => {
       <View style={displayContainerStyle}>
         <Text style={displayTextStyle}>{display}</Text>
         <Text style={resultTextStyle}>{result}</Text>
+
+        <View
+          style={{
+            position: 'absolute',
+            left: 20,
+            bottom: '10%',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: 70, // adjust this as needed
+            zIndex: 1000,
+          }}>
+          <TouchableOpacity onPress={copyToClipboard}>
+            <Feather
+              name="copy"
+              size={20}
+              color={theme.dark ? '#555' : '#000'}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+            <Feather
+              name="clock"
+              size={20}
+              color={theme.dark ? '#555' : '#000'}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={styles.modeButtonsContainer}>
@@ -890,6 +1021,42 @@ const ScientificCalculatorScreen = () => {
           </TouchableOpacity>
         ))}
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => {
+          setIsModalVisible(!isModalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <TouchableOpacity
+                style={styles.eraseButton}
+                onPress={() => setHistory([])}>
+                <FontAwesome5 name="eraser" size={24} color="black" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setIsModalVisible(false)}>
+                <Feather name="x" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView>
+              {history.map((item, index) => (
+                <View key={index}>
+                  <ScrollView horizontal>
+                    <Text style={styles.modalText}>{item.display}</Text>
+                  </ScrollView>
+                  <Text style={styles.modalResult}>{item.result}</Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -971,6 +1138,57 @@ const styles = StyleSheet.create({
   buttonContent: {
     flexDirection: 'row',
     alignItems: 'center',
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    width: '100%',
+    height: '60%',
+    // margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    // alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  closeButton: {
+    // position: 'absolute',
+    // top: 10,
+    // right: 10,
+    padding: 10, // added padding
+    // backgroundColor: 'red',
+  },
+
+  marginBar: {
+    width: '100%',
+    height: 2,
+    backgroundColor: 'gray',
+    marginTop: 10,
+  },
+  modalText: {
+    fontSize: 25,
+    width: '100%',
+    marginLeft: 10,
+    color: 'black',
+  },
+  modalResult: {
+    fontSize: 18,
+    color: 'grey',
+    marginLeft: 10,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 1,
+    marginBottom: 10,
   },
 });
 

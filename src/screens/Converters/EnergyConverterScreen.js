@@ -29,7 +29,7 @@ const theme = useTheme();
 // Use colors based on the current theme
 const displayTextStyle = {
   ...styles.displayText,
-  color: theme.colors.text,
+  color: theme.colors.buttonText,
 };
 
 const buttonsContainerStyle = {
@@ -90,7 +90,7 @@ const buttonTextStyle = color => ({
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={fromUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           onValueChange={itemValue => setFromUnit(itemValue)}>
           <Picker.Item label="Electron volts (eV)" value="Electron volts" />
           <Picker.Item label="Joules (J)" value="Joules" />
@@ -112,7 +112,7 @@ const buttonTextStyle = color => ({
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={toUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           onValueChange={itemValue => setToUnit(itemValue)}>
           <Picker.Item label="Electron volts (eV)" value="Electron volts" />
           <Picker.Item label="Joules (J)" value="Joules" />

@@ -27,18 +27,18 @@ const SimpleInterestCalculator = () => {
    // Use colors based on the current theme
    const displayTextStyle = {
      ...styles.displayText,
-     color: theme.colors.text,
-     marginBottom:20,
-  };
+     color: theme.colors.buttonText,
+     marginBottom: 20,
+   };
   
    const headerTextStyle = {
      ...styles.header,
-     color: theme.colors.text,
-    };
+     color: theme.colors.buttonText,
+   };
     
    const resultValueTextStyle = {
      ...styles.resultValue,
-     color: theme.colors.text,
+     color: theme.colors.buttonText,
    };
 
    const buttonsContainerStyle = {
@@ -149,7 +149,7 @@ const SimpleInterestCalculator = () => {
           </Ripple>
           <TextInput
             style={[styles.input, displayTextStyle]}
-            placeholderTextColor={theme.colors.text}
+            placeholderTextColor={theme.colors.buttonText}
             placeholder="Principal"
             keyboardType="numeric"
             onChangeText={text => setPrincipal(text)}
@@ -157,7 +157,7 @@ const SimpleInterestCalculator = () => {
           />
           <TextInput
             style={[styles.input, displayTextStyle]}
-            placeholderTextColor={theme.colors.text}
+            placeholderTextColor={theme.colors.buttonText}
             placeholder="Rate (%)"
             keyboardType="numeric"
             onChangeText={text => setRate(text)}
@@ -165,7 +165,7 @@ const SimpleInterestCalculator = () => {
           />
           <TextInput
             style={[styles.input, displayTextStyle]}
-            placeholderTextColor={theme.colors.text}
+            placeholderTextColor={theme.colors.buttonText}
             placeholder="Time (years)"
             keyboardType="numeric"
             onChangeText={text => setTime(text)}
@@ -176,7 +176,7 @@ const SimpleInterestCalculator = () => {
             <>
               <TextInput
                 style={[styles.input, displayTextStyle]}
-                placeholderTextColor={theme.colors.text}
+                placeholderTextColor={theme.colors.buttonText}
                 placeholder="Compounding periods per year"
                 keyboardType="numeric"
                 onChangeText={text => setCompoundingPeriodsInput(text)}
@@ -185,7 +185,7 @@ const SimpleInterestCalculator = () => {
               {!compoundingPeriodsInput && (
                 <Picker
                   selectedValue={compoundingPeriodsPicker}
-                  style={{color: theme.colors.text}} // Set color here
+                  style={{color: theme.colors.buttonText}} // Set color here
                   onValueChange={(itemValue, itemIndex) =>
                     setCompoundingPeriodsPicker(itemValue)
                   }>
@@ -223,7 +223,7 @@ const SimpleInterestCalculator = () => {
           </View>
           <TextInput
             style={[styles.input, displayTextStyle]}
-            placeholderTextColor={theme.colors.text}
+            placeholderTextColor={theme.colors.buttonText}
             placeholder="Nominal rate (%)"
             keyboardType="numeric"
             onChangeText={text => setNominalRate(text)}
@@ -231,7 +231,7 @@ const SimpleInterestCalculator = () => {
           />
           <TextInput
             style={[styles.input, displayTextStyle]}
-            placeholderTextColor={theme.colors.text}
+            placeholderTextColor={theme.colors.buttonText}
             placeholder="Compounding periods per year (for conversion)"
             keyboardType="numeric"
             onChangeText={text => setCompoundingPeriodsInput(text)}
@@ -240,7 +240,7 @@ const SimpleInterestCalculator = () => {
           {!compoundingPeriodsInput && (
             <Picker
               selectedValue={compoundingPeriodsPicker}
-              style={{color: theme.colors.text}} // Set color here
+              style={{color: theme.colors.buttonText}} // Set color here
               onValueChange={(itemValue, itemIndex) =>
                 setCompoundingPeriodsPicker(itemValue)
               }>
@@ -252,7 +252,11 @@ const SimpleInterestCalculator = () => {
               <Picker.Item label="Daily" value={365} />
             </Picker>
           )}
-          <Text style={[resultValueTextStyle, {textAlign:'center', marginBottom:30}]}>
+          <Text
+            style={[
+              resultValueTextStyle,
+              {textAlign: 'center', marginBottom: 30},
+            ]}>
             Effective rate:{'\n'} {effectiveRate.toFixed(2)}%
           </Text>
         </View>

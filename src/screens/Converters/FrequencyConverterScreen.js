@@ -26,7 +26,7 @@ const FrequencyConverterScreen = () => {
   // Use colors based on the current theme
   const displayTextStyle = {
     ...styles.displayText,
-    color: theme.colors.text,
+    color: theme.colors.buttonText,
   };
 
   const buttonsContainerStyle = {
@@ -84,7 +84,7 @@ const FrequencyConverterScreen = () => {
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={fromUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           onValueChange={itemValue => setFromUnit(itemValue)}>
           {Object.entries(frequencyUnits).map(([unit, {symbol}]) => (
             <Picker.Item
@@ -100,7 +100,7 @@ const FrequencyConverterScreen = () => {
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={toUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           onValueChange={itemValue => setToUnit(itemValue)}>
           {Object.entries(frequencyUnits).map(([unit, {symbol}]) => (
             <Picker.Item

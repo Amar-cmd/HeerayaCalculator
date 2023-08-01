@@ -32,7 +32,7 @@ const AreaConverterScreen = () => {
     // Use colors based on the current theme
     const displayTextStyle = {
       ...styles.displayText,
-      color: theme.colors.text,
+      color: theme.colors.buttonText,
     };
 
     const buttonsContainerStyle = {
@@ -93,7 +93,7 @@ const AreaConverterScreen = () => {
       <View style={styles.areaContainer}>
         <Picker
           selectedValue={fromUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           onValueChange={itemValue => setFromUnit(itemValue)}>
           {Object.keys(areaUnits).map(unit => (
             <Picker.Item key={unit} label={unit} value={unit} />
@@ -105,7 +105,7 @@ const AreaConverterScreen = () => {
       <View style={styles.areaContainer}>
         <Picker
           selectedValue={toUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           onValueChange={itemValue => setToUnit(itemValue)}>
           {Object.keys(areaUnits).map(unit => (
             <Picker.Item key={unit} label={unit} value={unit} />

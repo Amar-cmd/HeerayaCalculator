@@ -20,7 +20,7 @@ const displayContainerStyle = {
   // Use colors based on the current theme
   const displayTextStyle = {
     ...styles.displayText,
-    color: theme.colors.text,
+    color: theme.colors.buttonText,
   };
 
   const buttonsContainerStyle = {
@@ -94,7 +94,7 @@ const displayContainerStyle = {
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={fromUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           itemStyle={{backgroundColor: theme.colors.background}}
           onValueChange={itemValue => setFromUnit(itemValue)}>
           <Picker.Item label="Celsius °C" value="Celsius" />
@@ -107,7 +107,7 @@ const displayContainerStyle = {
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={toUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           itemStyle={{backgroundColor: theme.colors.background}}
           onValueChange={itemValue => setToUnit(itemValue)}>
           <Picker.Item label="Celsius °C" value="Celsius" />

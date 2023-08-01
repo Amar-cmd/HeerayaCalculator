@@ -7,19 +7,24 @@ import {
   ToastAndroid,
   Platform,
   Alert,
+  Clipboard,
+  Modal,
+  ScrollView,
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import DarkMode from '../../styles/DarkMode';
 import Ripple from 'react-native-material-ripple'; // import Ripple
-
+import Feather from 'react-native-vector-icons/Feather'; 
+import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'; 
 const CalculatorScreen = () => {
   const [display, setDisplay] = useState('');
   const [parenthesesCount, setParenthesesCount] = useState(0);
   const [lastButton, setLastButton] = useState(null);
   const [result, setResult] = useState('');
-  
+  const [isModalVisible, setIsModalVisible] = useState(false);
+const [history, setHistory] = useState([]);
+
   const theme = useTheme();
-  console.log(theme);
   // Use colors based on the current theme
   const displayContainerStyle = {
     ...styles.displayContainer,
@@ -28,12 +33,12 @@ const CalculatorScreen = () => {
 
   const displayTextStyle = {
     ...styles.displayText,
-    color: theme.colors.text,
+    color: theme.colors.buttonText,
   };
 
   const resultTextStyle = {
     ...styles.resultText,
-    color: theme.colors.text,
+    color: theme.colors.buttonText,
   };
 
   const buttonsContainerStyle = {
@@ -66,6 +71,10 @@ const CalculatorScreen = () => {
     ...styles.buttonText,
     color: color === '#2b840c' ? '#fff' : color || theme.colors.buttonText,
   });
+
+  const copyToClipboard = () => {
+    Clipboard.setString(display);
+  };
 
 
   const onButtonPress = buttonValue => {
@@ -110,15 +119,40 @@ const CalculatorScreen = () => {
         setDisplay(display + 'Math.sqrt(');
         setParenthesesCount(parenthesesCount + 1);
       }
+    } else if (buttonValue === '^2') {
+      // If the display can be evaluated, calculate the result and square it
+      try {
+        let resultTemp = display;
+        if (['+', '-', '*', '/'].includes(resultTemp.slice(-1))) {
+          resultTemp = resultTemp.slice(0, -1);
+        }
+        resultTemp = resultTemp.replace(
+          /Math\.sqrt\((\d+)\)/g,
+          'Math.sqrt($1)',
+        );
+        let result = eval(resultTemp);
+        if (result < 0) result = Math.abs(result)
+        if (typeof result === 'number' && isFinite(result)) {
+          let squaredResult = `Math.pow(${Math.abs(result)},2)`;
+          // Update the display with the squared result and replace 'Math.pow(Math.abs(result), 2)' with 'result^2'
+          setDisplay(`${result}^2`);
+          // Evaluate the squared result to update the result
+          console.log(eval(squaredResult));
+          setResult(eval(squaredResult).toString());
+        } else {
+          setResult('');
+        }
+      } catch (error) {
+        setResult('');
+      }
     } else if (buttonValue === '%') {
-      // Check if current number already contains a percent sign
       const currentNumber = display.split(/[\+\-\*\/]/).slice(-1)[0];
       if (!/%/.test(currentNumber)) {
         setDisplay(display + buttonValue);
       }
     } else if (
       ['+', '-', '*', '/', '^2'].includes(buttonValue) &&
-      (display.length === 0 || /[\+\-\*\/\^2\.%]$/.test(display))
+      (display.length === 0 || /[\+\-\*\/\^2\.]$/.test(display))
     ) {
       if (Platform.OS === 'android') {
         ToastAndroid.show('Invalid input', ToastAndroid.SHORT);
@@ -165,13 +199,19 @@ const CalculatorScreen = () => {
       }
     } else if (buttonValue === '=') {
       try {
-        let result = display.replace(/(\d+\.?\d*)\%/g, '($1/100)'); // Updated regex to match decimal numbers
-        result = result.replace(/(\d+\.?\d*)\^(\d+\.?\d*)/g, 'Math.pow($1,$2)'); // Updated regex to match decimal numbers
+        let resultTemp = display.replace(/(\d+\.?\d*)\%/g, '($1/100)'); // Updated regex to match decimal numbers
+        resultTemp = resultTemp.replace(
+          /(\d+\.?\d*)\^(\d+\.?\d*)/g,
+          'Math.pow($1,$2)',
+        ); // Updated regex to match decimal numbers
         // Limit the result to 10 decimal places
-        let computedResult = eval(result);
+        let computedResult = eval(resultTemp);
         computedResult = parseFloat(computedResult.toFixed(10));
         setDisplay(String(computedResult));
         setResult('');
+
+        // Add current display and result to history
+        setHistory([...history, {display, result: String(computedResult)}]);
       } catch (error) {
         setDisplay('Error');
         setResult('');
@@ -227,6 +267,32 @@ const CalculatorScreen = () => {
         </Text>
 
         <Text style={resultTextStyle}>{result}</Text>
+
+        <View
+          style={{
+            position: 'absolute',
+            left: 20,
+            bottom: '10%',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            width: 70, // adjust this as needed
+          }}>
+          <TouchableOpacity onPress={copyToClipboard}>
+            <Feather
+              name="copy"
+              size={20}
+              color={theme.dark ? '#555' : '#000'}
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={() => setIsModalVisible(true)}>
+            <Feather
+              name="clock"
+              size={20}
+              color={theme.dark ? '#555' : '#000'}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <View style={buttonsContainerStyle}>
@@ -266,6 +332,42 @@ const CalculatorScreen = () => {
           </Ripple>
         ))}
       </View>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => {
+          setIsModalVisible(!isModalVisible);
+        }}>
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <View
+              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+              <TouchableOpacity
+                style={styles.eraseButton}
+                onPress={() => setHistory([])}>
+                <FontAwesome5 name="eraser" size={24} color="black" />
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => setIsModalVisible(false)}>
+                <Feather name="x" size={24} color="black" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView>
+              {history.map((item, index) => (
+                <View key={index}>
+                  <ScrollView horizontal>
+                    <Text style={styles.modalText}>{item.display}</Text>
+                  </ScrollView>
+                  <Text style={styles.modalResult}>{item.result}</Text>
+                </View>
+              ))}
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -309,6 +411,57 @@ const styles = StyleSheet.create({
     fontSize: 20,
     alignSelf: 'flex-end',
     marginBottom: 20,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    marginTop: 22,
+  },
+  modalView: {
+    width: '100%',
+    height: '60%',
+    // margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    // alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  closeButton: {
+    // position: 'absolute',
+    // top: 10,
+    // right: 10,
+    padding: 10, // added padding
+    // backgroundColor: 'red',
+  },
+
+  marginBar: {
+    width: '100%',
+    height: 2,
+    backgroundColor: 'gray',
+    marginTop: 10,
+  },
+  modalText: {
+    fontSize: 25,
+    width: '100%',
+    marginLeft: 10,
+    color: 'black',
+  },
+  modalResult: {
+    fontSize: 18,
+    color: 'grey',
+    marginLeft: 10,
+    borderBottomColor: 'gray',
+    borderBottomWidth: 1,
+    marginBottom:10,
   },
 });
 

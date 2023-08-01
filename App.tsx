@@ -27,6 +27,34 @@ import {
 import CalculatorScreen from './src/screens/Calculators/CalculatorScreen';
 import SettingScreen from './src/screens/SettingScreen';
 import DarkMode from './src/styles/DarkMode';
+import {
+  BlueTheme,
+  RedTheme,
+  GreenTheme,
+  YellowTheme,
+  PinkTheme,
+  PurpleTheme,
+  OrangeTheme,
+  VioletTheme,
+  MaroonTheme,
+  GreyTheme,
+  BrownTheme,
+  WhiteTheme,
+  LimeTheme,
+  CrimsonTheme,
+  OliveTheme,
+  SilverTheme,
+  AquaTheme,
+  AquamarineTheme,
+  TealTheme,
+  BurgundyTheme,
+  ScarletTheme,
+  IndigoTheme,
+  MagentaTheme,
+  BeigeTheme,
+  CharcoalTheme,
+} from './src/screens/ColorMode';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useTheme} from '@react-navigation/native';
 import VolumeConverterScreen from './src/screens/Converters/VolumeConverterScreen';
@@ -102,7 +130,11 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
         label="Interest Calculator"
         onPress={() => props.navigation.navigate('Interest Calculator')}
         icon={({color, size}) => (
-          <AntDesign name="calendar" color={color} size={size} />
+          <MaterialCommunityIcons
+            name="bank-outline"
+            color={color}
+            size={size}
+          />
         )}
       />
       <View
@@ -270,21 +302,21 @@ function MyDrawer({toggleTheme}: {toggleTheme: (mode: string) => void}) {
         headerTintColor: theme.colors.text, // set header tint color based on theme
       }}
       drawerContent={props => <CustomDrawerContent {...props} />}>
-      <Drawer.Screen
-        name="Interest Calculator"
-        component={SimpleInterestCalculator}
-      />
-      <Drawer.Screen
-        name="Programming Calculator"
-        component={ProgrammingCalculatorScreen}
-      />
       <Drawer.Screen name="Standard Calculator" component={CalculatorScreen} />
       <Drawer.Screen
         name="Scientific Calculator"
         component={ScientificCalculatorScreen}
       />
-
+      <Drawer.Screen
+        name="Programming Calculator"
+        component={ProgrammingCalculatorScreen}
+      />
       <Drawer.Screen name="Date Calculator" component={DateCalculatorScreen} />
+
+      <Drawer.Screen
+        name="Interest Calculator"
+        component={SimpleInterestCalculator}
+      />
 
       <Drawer.Screen name="Angle" component={AngleConverterScreen} />
       <Drawer.Screen name="Area" component={AreaConverterScreen} />
@@ -325,6 +357,56 @@ function App(): JSX.Element {
       setTheme(DefaultTheme);
     } else if (mode === 'dark') {
       setTheme(DarkMode);
+    } else if (mode === 'blue') {
+      setTheme(BlueTheme);
+    } else if (mode === 'red') {
+      setTheme(RedTheme);
+    } else if (mode === 'green') {
+      setTheme(GreenTheme);
+    } else if (mode === 'purple') {
+      setTheme(PurpleTheme);
+    } else if (mode === 'pink') {
+      setTheme(PinkTheme);
+    } else if (mode === 'yellow') {
+      setTheme(YellowTheme);
+    } else if (mode === 'orange') {
+      setTheme(OrangeTheme);
+    } else if (mode === 'violet') {
+      setTheme(VioletTheme);
+    } else if (mode === 'maroon') {
+      setTheme(MaroonTheme);
+    } else if (mode === 'grey') {
+      setTheme(GreyTheme);
+    } else if (mode === 'charcoal') {
+      setTheme(CharcoalTheme);
+    } else if (mode === 'beige') {
+      setTheme(BeigeTheme);
+    } else if (mode === 'magenta') {
+      setTheme(MagentaTheme);
+    } else if (mode === 'indigo') {
+      setTheme(IndigoTheme);
+    } else if (mode === 'scarlet') {
+      setTheme(ScarletTheme);
+    } else if (mode === 'burgundy') {
+      setTheme(BurgundyTheme);
+    } else if (mode === 'teal') {
+      setTheme(TealTheme);
+    } else if (mode === 'aquamarine') {
+      setTheme(AquamarineTheme);
+    } else if (mode === 'aqua') {
+      setTheme(AquaTheme);
+    } else if (mode === 'silver') {
+      setTheme(SilverTheme);
+    } else if (mode === 'olive') {
+      setTheme(OliveTheme);
+    } else if (mode === 'crimson') {
+      setTheme(CrimsonTheme);
+    } else if (mode === 'lime') {
+      setTheme(LimeTheme);
+    } else if (mode === 'white') {
+      setTheme(WhiteTheme);
+    } else if (mode === 'brown') {
+      setTheme(BrownTheme);
     }
     await AsyncStorage.setItem('theme', mode);
   };
@@ -334,6 +416,56 @@ function App(): JSX.Element {
       const storedTheme = await AsyncStorage.getItem('theme');
       if (storedTheme === 'dark') {
         setTheme(DarkMode);
+      } else if (storedTheme === 'blue') {
+        setTheme(BlueTheme);
+      } else if (storedTheme === 'red') {
+        setTheme(RedTheme);
+      } else if (storedTheme === 'green') {
+        setTheme(GreenTheme);
+      } else if (storedTheme === 'purple') {
+        setTheme(PurpleTheme);
+      } else if (storedTheme === 'pink') {
+        setTheme(PinkTheme);
+      } else if (storedTheme === 'yellow') {
+        setTheme(YellowTheme);
+      } else if (storedTheme === 'orange') {
+        setTheme(OrangeTheme);
+      } else if (storedTheme === 'violet') {
+        setTheme(VioletTheme);
+      } else if (storedTheme === 'maroon') {
+        setTheme(MaroonTheme);
+      } else if (storedTheme === 'grey') {
+        setTheme(GreyTheme);
+      } else if (storedTheme === 'charcoal') {
+        setTheme(CharcoalTheme);
+      } else if (storedTheme === 'beige') {
+        setTheme(BeigeTheme);
+      } else if (storedTheme === 'magenta') {
+        setTheme(MagentaTheme);
+      } else if (storedTheme === 'indigo') {
+        setTheme(IndigoTheme);
+      } else if (storedTheme === 'scarlet') {
+        setTheme(ScarletTheme);
+      } else if (storedTheme === 'burgundy') {
+        setTheme(BurgundyTheme);
+      } else if (storedTheme === 'teal') {
+        setTheme(TealTheme);
+      } else if (storedTheme === 'aquamarine') {
+        setTheme(AquamarineTheme);
+      } else if (storedTheme === 'aqua') {
+        setTheme(AquaTheme);
+      } else if (storedTheme === 'silver') {
+        setTheme(SilverTheme);
+      } else if (storedTheme === 'olive') {
+        setTheme(OliveTheme);
+      } else if (storedTheme === 'crimson') {
+        setTheme(CrimsonTheme);
+      } else if (storedTheme === 'lime') {
+        setTheme(LimeTheme);
+      } else if (storedTheme === 'white') {
+        setTheme(WhiteTheme);
+      } else if (storedTheme === 'brown') {
+        setTheme(BrownTheme);
       } else {
         setTheme(DefaultTheme);
       }
@@ -359,11 +491,25 @@ function App(): JSX.Element {
     ); // return ActivityIndicator when loading
   }
 
+  function getBarStyle(color: string) {
+    const rgb = parseInt(color.slice(1), 16); // Convert color from hex to decimal
+    const r = (rgb >> 16) & 255; // Extract red component
+    const g = (rgb >> 8) & 255; // Extract green component
+    const b = rgb & 255; // Extract blue component
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000; // Calculate color brightness
+    return brightness < 128 ? 'light-content' : 'dark-content';
+  }
+
   return (
     <SafeAreaView style={{flex: 1}}>
-      <StatusBar
+      {/* <StatusBar
         backgroundColor={theme.dark ? '#171717' : 'white'}
         barStyle={theme.dark ? 'light-content' : 'dark-content'}
+      /> */}
+
+      <StatusBar
+        backgroundColor={theme.colors.card}
+        barStyle={getBarStyle(theme.colors.text)}
       />
 
       <NavigationContainer theme={theme}>

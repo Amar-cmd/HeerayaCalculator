@@ -26,7 +26,7 @@ const [firstOperand, setFirstOperand] = useState('');
    // Use colors based on the current theme
    const displayTextStyle = {
      ...styles.displayText,
-     color: theme.dark? theme.colors.text : '#000',
+     color: theme.dark ? theme.colors.buttonText : '#000',
    };
 
    const buttonsContainerStyle = {
@@ -56,7 +56,7 @@ const [firstOperand, setFirstOperand] = useState('');
     
   const buttonColumnTextStyle = {
     ...styles.buttonTextBlack,
-    color: theme.colors.text,
+    color: theme.colors.buttonText,
   };
   
 const formatHexBin = str => {
@@ -128,6 +128,105 @@ const formatDec = str => Number(str).toLocaleString('en-IN');
    convertValue(displayValue, selectedSystem);
  }, [displayValue, selectedSystem]);
 
+  // const handlePress = value => {
+  //   if (value === 'Del') {
+  //     setDisplayValue(prevDisplayValue => prevDisplayValue.slice(0, -1));
+  //   } else if (
+  //     ['AND', 'OR', 'NOT', 'NAND', 'NOR', 'XOR', '+', '*', '/'].includes(value)
+  //   ) {
+  //     setDisplayValue(prevDisplayValue => prevDisplayValue + ' ' + value + ' ');
+  //     setNextInputClears(false);
+  //   } else if (value === '-') {
+  //     setDisplayValue(prevDisplayValue =>
+  //       prevDisplayValue === '' ? value : prevDisplayValue + ' ' + value + ' ',
+  //     );
+  //   } else if (value === '=') {
+  //     // const operationArray = displayValue.split(' ');
+
+  //     // let result;
+  //     // let operand1 = operationArray[0].startsWith('0x')
+  //     //   ? parseInt(operationArray[0].substring(2), 16)
+  //     //   : selectedSystem === 'binary'
+  //     //   ? parseInt(operationArray[0], 2)
+  //     //   : parseInt(operationArray[0]);
+  //     // let operatorIndex = 1;
+  //     // let operand2Index = 2;
+  //     // while (operatorIndex < operationArray.length) {
+  //     //   let operator = operationArray[operatorIndex];
+  //     //   let operand2 = operationArray[operand2Index].startsWith('0x')
+  //     //     ? parseInt(operationArray[operand2Index].substring(2), 16)
+  //     //     : selectedSystem === 'binary'
+  //     //     ? parseInt(operationArray[operand2Index], 2)
+  //     //     : parseInt(operationArray[operand2Index]);
+
+      
+  //     const operationArray = displayValue.split(' ');
+
+  //     let result;
+  //     let operand1 = operationArray[0].startsWith('0x')
+  //       ? parseInt(operationArray[0].substring(2), 16)
+  //       : selectedSystem === 'binary'
+  //       ? parseInt(operationArray[0], 2) // Interpret as binary number
+  //       : parseInt(operationArray[0]);
+  //     let operatorIndex = 1;
+  //     let operand2Index = 2;
+  //     while (operatorIndex < operationArray.length) {
+  //       let operator = operationArray[operatorIndex];
+  //       let operand2 = operationArray[operand2Index].startsWith('0x')
+  //         ? parseInt(operationArray[operand2Index].substring(2), 16)
+  //         : selectedSystem === 'binary'
+  //         ? parseInt(operationArray[operand2Index], 2) // Interpret as binary number
+  //         : parseInt(operationArray[operand2Index]);
+  //       switch (operator) {
+  //         case 'AND':
+  //           result = operand1 & operand2;
+  //           break;
+  //         case 'OR':
+  //           result = operand1 | operand2;
+  //           break;
+  //         case 'NOT':
+  //           result = ~operand1;
+  //           break;
+  //         case 'NAND':
+  //           result = ~(operand1 & operand2);
+  //           break;
+  //         case 'NOR':
+  //           result = ~(operand1 | operand2);
+  //           break;
+  //         case 'XOR':
+  //           result = operand1 ^ operand2;
+  //           break;
+  //         case '+':
+  //           result = operand1 + operand2;
+  //           break;
+  //         case '-':
+  //           result = operand1 - operand2;
+  //           break;
+  //         case '*':
+  //           result = operand1 * operand2;
+  //           break;
+  //         case '/':
+  //           result = operand1 / operand2;
+  //           break;
+  //         default:
+  //           break;
+  //       }
+  //       operand1 = result;
+  //       operatorIndex += 2;
+  //       operand2Index += 2;
+  //     }
+  //     // setDisplayValue(result.toString());
+  //     setDisplayValue(result.toString(2));
+  //   } else {
+  //     if (nextInputClears) {
+  //       setDisplayValue(value);
+  //       setNextInputClears(false);
+  //     } else {
+  //       setDisplayValue(prevDisplayValue => prevDisplayValue + value);
+  //     }
+  //   }
+  // };
+
   const handlePress = value => {
     if (value === 'Del') {
       setDisplayValue(prevDisplayValue => prevDisplayValue.slice(0, -1));
@@ -147,8 +246,12 @@ const formatDec = str => Number(str).toLocaleString('en-IN');
       let operand1 = operationArray[0].startsWith('0x')
         ? parseInt(operationArray[0].substring(2), 16)
         : selectedSystem === 'binary'
-        ? parseInt(operationArray[0], 2)
-        : parseInt(operationArray[0]);
+        ? parseInt(operationArray[0], 2) // Interpret as binary number
+        : selectedSystem === 'octal'
+        ? parseInt(operationArray[0], 8) // Interpret as octal number
+        : selectedSystem === 'decimal'
+        ? parseInt(operationArray[0], 10) // Interpret as decimal number
+        : parseInt(operationArray[0], 16); // Interpret as hexadecimal number
       let operatorIndex = 1;
       let operand2Index = 2;
       while (operatorIndex < operationArray.length) {
@@ -156,8 +259,12 @@ const formatDec = str => Number(str).toLocaleString('en-IN');
         let operand2 = operationArray[operand2Index].startsWith('0x')
           ? parseInt(operationArray[operand2Index].substring(2), 16)
           : selectedSystem === 'binary'
-          ? parseInt(operationArray[operand2Index], 2)
-          : parseInt(operationArray[operand2Index]);
+          ? parseInt(operationArray[operand2Index], 2) // Interpret as binary number
+          : selectedSystem === 'octal'
+          ? parseInt(operationArray[operand2Index], 8) // Interpret as octal number
+          : selectedSystem === 'decimal'
+          ? parseInt(operationArray[operand2Index], 10) // Interpret as decimal number
+          : parseInt(operationArray[operand2Index], 16); // Interpret as hexadecimal number
         switch (operator) {
           case 'AND':
             result = operand1 & operand2;
@@ -196,7 +303,23 @@ const formatDec = str => Number(str).toLocaleString('en-IN');
         operatorIndex += 2;
         operand2Index += 2;
       }
-      setDisplayValue(result.toString());
+      // Display the result in the selected number system
+      switch (selectedSystem) {
+        case 'binary':
+          setDisplayValue(result.toString(2));
+          break;
+        case 'octal':
+          setDisplayValue(result.toString(8));
+          break;
+        case 'decimal':
+          setDisplayValue(result.toString(10));
+          break;
+        case 'hexa':
+          setDisplayValue(result.toString(16));
+          break;
+        default:
+          setDisplayValue(result.toString(10));
+      }
     } else {
       if (nextInputClears) {
         setDisplayValue(value);
@@ -206,7 +329,6 @@ const formatDec = str => Number(str).toLocaleString('en-IN');
       }
     }
   };
-
 
 
    const handleSystemPress = system => {

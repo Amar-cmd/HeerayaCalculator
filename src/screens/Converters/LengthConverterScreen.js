@@ -32,7 +32,7 @@ const LengthConverterScreen = () => {
   };
     const displayTextStyle = {
       ...styles.displayText,
-      color: theme.colors.text,
+      color: theme.colors.buttonText,
     };
 
     const buttonsContainerStyle = {
@@ -92,7 +92,7 @@ const LengthConverterScreen = () => {
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={fromUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           onValueChange={itemValue => setFromUnit(itemValue)}>
           <Picker.Item label="Nanometers (nm)" value="Nanometers" />
           <Picker.Item label="Microns (µm)" value="Microns" />
@@ -112,7 +112,7 @@ const LengthConverterScreen = () => {
       <View style={styles.conversionContainer}>
         <Picker
           selectedValue={toUnit}
-          style={{...styles.picker, color: theme.colors.text}}
+          style={{...styles.picker, color: theme.colors.buttonText}}
           onValueChange={itemValue => setToUnit(itemValue)}>
           <Picker.Item label="Nanometers (nm)" value="Nanometers" />
           <Picker.Item label="Microns (µm)" value="Microns" />
