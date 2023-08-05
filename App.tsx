@@ -354,7 +354,7 @@ function App(): JSX.Element {
   const [loading, setLoading] = useState(true);
   const toggleTheme = async (mode: string) => {
     if (mode === 'light') {
-      setTheme(DefaultTheme);
+      setTheme(WhiteTheme);
     } else if (mode === 'dark') {
       setTheme(DarkMode);
     } else if (mode === 'blue') {
@@ -416,6 +416,8 @@ function App(): JSX.Element {
       const storedTheme = await AsyncStorage.getItem('theme');
       if (storedTheme === 'dark') {
         setTheme(DarkMode);
+      } else if (storedTheme === 'light') {
+        setTheme(WhiteTheme);
       } else if (storedTheme === 'blue') {
         setTheme(BlueTheme);
       } else if (storedTheme === 'red') {
@@ -488,16 +490,66 @@ function App(): JSX.Element {
           backgroundColor: 'black',
         }}
       />
-    ); // return ActivityIndicator when loading
+    );
   }
 
-  function getBarStyle(color: string) {
-    const rgb = parseInt(color.slice(1), 16); // Convert color from hex to decimal
-    const r = (rgb >> 16) & 255; // Extract red component
-    const g = (rgb >> 8) & 255; // Extract green component
-    const b = rgb & 255; // Extract blue component
-    const brightness = (r * 299 + g * 587 + b * 114) / 1000; // Calculate color brightness
-    return brightness < 128 ? 'light-content' : 'dark-content';
+  // function getBarStyle(color: string) {
+  //   const rgb = parseInt(color.slice(1), 16); // Convert color from hex to decimal
+  //   const r = (rgb >> 16) & 255; // Extract red component
+  //   const g = (rgb >> 8) & 255; // Extract green component
+  //   const b = rgb & 255; // Extract blue component
+  //   const brightness = (r * 299 + g * 587 + b * 114) / 1000; // Calculate color brightness
+  //   return brightness < 128 ? 'light-content' : 'dark-content';
+  // }
+
+  // function getBarStyle(backgroundColor: string) {
+  //   const rgb = parseInt(backgroundColor.slice(1), 16); // Convert color from hex to decimal
+  //   const r = (rgb >> 16) & 255; // Extract red component
+  //   const g = (rgb >> 8) & 255; // Extract green component
+  //   const b = rgb & 255; // Extract blue component
+  //   const brightness = (r * 299 + g * 587 + b * 114) / 1000; // Calculate color brightness
+  //   return brightness < 128 ? 'light-content' : 'dark-content';
+  // }
+
+  function rgbToLab(r: number, g: number, b: number) {
+    // Step 1: Convert RGB to sRGB
+    r /= 255;
+    g /= 255;
+    b /= 255;
+
+    // Step 2: Convert sRGB to XYZ
+    const gammaCorrect = (value: number) =>
+      value <= 0.04045 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
+
+    r = gammaCorrect(r);
+    g = gammaCorrect(g);
+    b = gammaCorrect(b);
+
+    const x = 0.4124 * r + 0.3576 * g + 0.1805 * b;
+    const y = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    const z = 0.0193 * r + 0.1192 * g + 0.9505 * b;
+
+    // Step 3: Normalize XYZ with D65 illuminant
+    const xD65 = x / 0.95047;
+    const yD65 = y;
+    const zD65 = z / 1.08883;
+
+    // Step 4: Convert XYZ to L*a*b*
+    const convertXYZ = (value: number) =>
+      value > 0.008856 ? Math.pow(value, 1 / 3) : value * 7.787 + 16 / 116;
+
+    const L = 116 * convertXYZ(yD65) - 16;
+    return L;
+  }
+
+  function getBarStyle(backgroundColor: string) {
+    const rgb = parseInt(backgroundColor.slice(1), 16);
+    const r = (rgb >> 16) & 255;
+    const g = (rgb >> 8) & 255;
+    const b = rgb & 255;
+
+    const L = rgbToLab(r, g, b);
+    return L < 50 ? 'light-content' : 'dark-content';
   }
 
   return (
@@ -507,9 +559,14 @@ function App(): JSX.Element {
         barStyle={theme.dark ? 'light-content' : 'dark-content'}
       /> */}
 
-      <StatusBar
+      {/* <StatusBar
         backgroundColor={theme.colors.card}
         barStyle={getBarStyle(theme.colors.text)}
+      /> */}
+
+      <StatusBar
+        backgroundColor={theme.colors.card}
+        barStyle={getBarStyle(theme.colors.card)} // Use background color to determine bar style
       />
 
       <NavigationContainer theme={theme}>

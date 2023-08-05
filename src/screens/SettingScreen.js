@@ -387,6 +387,7 @@ const styles = StyleSheet.create({
   },
   radioText: {
     fontSize: 18,
+    color:'black'
   },
   colorContainer: {
     flexDirection: 'row',
