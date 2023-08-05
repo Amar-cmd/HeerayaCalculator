@@ -1,9 +1,13 @@
 # Heeraya Calculator
+![Screenshot](./sample_images/logo.png)
 
 Heeraya Calculator is an easy-to-use, powerful calculator app for Android.
 Download Now! [Google Play Store](https://play.google.com/store/apps/details?id=com.heerayacalculator)
 
 ![Screenshot](./sample_images/1.png)
+![Screenshot](./sample_images/2.png)
+![Screenshot](./sample_images/3.png)
+![Screenshot](./sample_images/4.png)
 
 ## Features
 
