@@ -152,7 +152,7 @@ const [history, setHistory] = useState([]);
       }
     } else if (
       ['+', '-', '*', '/', '^2'].includes(buttonValue) &&
-      (display.length === 0 || /[\+\-\*\/\^2\.]$/.test(display))
+      (display.length === 0 || /[\+\-\*\/\.]$|(\^2)$/.test(display))
     ) {
       if (Platform.OS === 'android') {
         ToastAndroid.show('Invalid input', ToastAndroid.SHORT);
