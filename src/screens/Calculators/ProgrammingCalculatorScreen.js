@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
+import {View, Text, TouchableOpacity, StyleSheet, Vibration} from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import Ripple from 'react-native-material-ripple'; // import Ripple
 
@@ -228,6 +228,8 @@ const formatDec = str => Number(str).toLocaleString('en-IN');
   // };
 
   const handlePress = value => {
+         Vibration.vibrate(60); 
+
     if (value === 'Del') {
       setDisplayValue(prevDisplayValue => prevDisplayValue.slice(0, -1));
     } else if (
@@ -503,8 +505,7 @@ const formatDec = str => Number(str).toLocaleString('en-IN');
           {symbol: '0', value: '0'},
           {symbol: '=', value: '=', color: '#2b840c', text: '#fff'},
         ].map(button => (
-          <Ripple
-            rippleColor={theme.dark ? '#fff' : '#000'}
+          <TouchableOpacity
             key={button.value}
             style={buttonStyle(button.color)}
             onPress={() =>
@@ -519,7 +520,7 @@ const formatDec = str => Number(str).toLocaleString('en-IN');
               ]}>
               {button.symbol}
             </Text>
-          </Ripple>
+          </TouchableOpacity>
         ))}
       </View>
     </View>

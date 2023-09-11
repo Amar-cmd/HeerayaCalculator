@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
+import {Text, View, TouchableOpacity, StyleSheet, Vibration} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {useTheme} from '@react-navigation/native';
-import Ripple from 'react-native-material-ripple'; // import Ripple
 
 const SpeedConverterScreen = () => {
   const [display, setDisplay] = useState('0');
@@ -58,6 +57,8 @@ const SpeedConverterScreen = () => {
     
 
   const onButtonPress = buttonValue => {
+         Vibration.vibrate(60); 
+
     if (buttonValue === 'AC') {
       setDisplay('0');
     } else if (buttonValue === 'Del') {
@@ -136,13 +137,12 @@ const SpeedConverterScreen = () => {
           {symbol: '.', value: '.', text: '#e67371'},
           {symbol: '0', value: '0'},
         ].map(button => (
-          <Ripple
-            rippleColor={theme.dark ? '#fff' : '#000'}
+          <TouchableOpacity
             key={button.value}
             style={buttonStyle()}
             onPress={() => onButtonPress(button.value)}>
             <Text style={buttonTextStyle(button.text)}>{button.symbol}</Text>
-          </Ripple>
+          </TouchableOpacity>
         ))}
       </View>
     </View>

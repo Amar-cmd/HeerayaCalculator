@@ -1,8 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {Text, View, TouchableOpacity, StyleSheet} from 'react-native';
+import {Text, View, TouchableOpacity, StyleSheet, Vibration} from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import {useTheme} from '@react-navigation/native';
-import Ripple from 'react-native-material-ripple'; // import Ripple
 
 const AngleConverterScreen = () => {
   const [display, setDisplay] = useState('0');
@@ -53,6 +52,7 @@ const AngleConverterScreen = () => {
     
 
   const onButtonPress = buttonValue => {
+     Vibration.vibrate(60); 
     if (buttonValue === 'AC') {
       setDisplay('0');
     } else if (buttonValue === 'Del') {
@@ -133,13 +133,19 @@ const AngleConverterScreen = () => {
           {symbol: '.', value: '.', color: '#fff', text: '#e67371'},
           {symbol: '0', value: '0', color: '#fff'},
         ].map(button => (
-          <Ripple
+          // <Ripple
+          //   key={button.value}
+          //   rippleColor={theme.dark ? '#fff' : '#000'}
+          //   style={buttonStyle(button.color)}
+          //   onPress={() => onButtonPress(button.value)}>
+          //   <Text style={buttonTextStyle(button.text)}>{button.symbol}</Text>
+          // </Ripple>
+          <TouchableOpacity
             key={button.value}
-            rippleColor={theme.dark ? '#fff' : '#000'}
             style={buttonStyle(button.color)}
             onPress={() => onButtonPress(button.value)}>
             <Text style={buttonTextStyle(button.text)}>{button.symbol}</Text>
-          </Ripple>
+          </TouchableOpacity>
         ))}
       </View>
     </View>

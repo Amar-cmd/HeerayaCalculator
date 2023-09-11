@@ -10,10 +10,9 @@ import {
   Clipboard,
   Modal,
   ScrollView,
+  Vibration,
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
-import DarkMode from '../../styles/DarkMode';
-import Ripple from 'react-native-material-ripple'; // import Ripple
 import Feather from 'react-native-vector-icons/Feather'; 
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5'; 
 const CalculatorScreen = () => {
@@ -78,6 +77,7 @@ const [history, setHistory] = useState([]);
 
 
   const onButtonPress = buttonValue => {
+     Vibration.vibrate(60); 
     if (buttonValue === 'AC') {
       setDisplay('');
       setParenthesesCount(0);
@@ -322,14 +322,12 @@ const [history, setHistory] = useState([]);
           {symbol: '.', value: '.', color: '#fff'},
           {symbol: '=', value: '=', color: '#2b840c', text: '#fff'},
         ].map(button => (
-          <Ripple
-            rippleColor={theme.dark ? '#fff' : '#000'}
-            // rippleDuration={200}
+          <TouchableOpacity
             key={button.value}
             style={buttonStyle(button.color)}
             onPress={() => onButtonPress(button.value)}>
             <Text style={buttonTextStyle(button.text)}>{button.symbol}</Text>
-          </Ripple>
+          </TouchableOpacity>
         ))}
       </View>
       <Modal

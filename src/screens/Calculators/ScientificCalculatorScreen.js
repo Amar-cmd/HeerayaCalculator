@@ -10,6 +10,7 @@ import {
   Clipboard,
   Modal,
   ScrollView,
+  Vibration,
 } from 'react-native';
 import {useTheme} from '@react-navigation/native';
 import * as math from 'mathjs';
@@ -303,7 +304,7 @@ const [history, setHistory] = useState([]);
       ];
 
   const onButtonPress = buttonValue => {
-    
+     Vibration.vibrate(60); 
     if (buttonValue === 'C') {
       setDisplay('');
       setResult('');
